@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${category.name}">Quiénes Somos</title>
+    <link rel="shortcut icon" href="/img/logo-favicon.ico" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<!-- Header - Top bar y main header navbar-->
+<header>
+    <div class="top-bar text-center text-white p-3">
+        <span>Por esta semana compra a 10% de descuento</span>
+    </div>
+    <div class="main-header d-flex justify-content-between gap-4 p-3">
+        <div class="logo">
+            <a th:href="@{/}">
+                <img src="/img/logo.png" alt="imagen del logo">
+            </a>
+        </div>
+        <div class="search input-group mb-3">
+            <input type="text" placeholder="Buscar" class="form-control">
+            <button class="btn btn-outline-warning" type="button" id="button-addon2">
+                <i class="icon-cart bi bi-search" style="color:var(--color-principal); font-size: 18px;"></i>
+            </button>
+        </div>
+        <div class="cart ">
+            <i class="bi bi-cart" style="color:#000; font-size: 24px;"></i>
+        </div>
+    </div>
+    <nav class=" main-nav navbar navbar-expand-lg ">
+        <div class="container-fluid">
+            <a class="navbar-brand" th:href="@{/}">Inicio</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+                    aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <a class="nav-link" href="#">Lo más vendido</a>
+                    <a class="nav-link" th:href="@{/galeria/7}">Infantil</a>
+                    <a class="nav-link" th:href="@{/galeria/1}">Ficción</a>
+                    <a class="nav-link" th:href="@{/galeria/8}">Historia</a>
+                    <a class="nav-link" th:href="@{/galeria/9}">Juvenil</a>
+                    <a class="nav-link" href="#">eBooks</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<!-- Portada -->
+<div class="container-fluid bg-image"
+     style="background-image: url('/img/banner.webp'); background-size: cover; background-position: center; color: white; text-align: center; padding: 100px 0;">
+    <div class="container">
+        <h1 th:text="${category.name}">Ficción</h1>
+        <p class="lead" th:text="${category.description}">En la Catedral, encontrará una amplia variedad de libros de
+            ficción que van desde historias de intriga, aventuras, romance y más.</p>
+    </div>
+</div>
+
+<!-- Galería venta -->
+<div class="container-fluid mt-4 mb-5">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-lg-3">
+            <div class="card">
+                <div class="card-body">
+                    <!-- Buscador -->
+                    <div class="mb-4">
+                        <h5 class="card-title">Buscar</h5>
+                        <div class="input-group">
+                            <input id="searchInput" type="text" class="form-control" placeholder="Buscar libros...">
+                            <button class="btn btn-outline-warning" type="button" id="searchButton">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Categorías -->
+                    <h5 class="card-title">Categorías</h5>
+                    <div class="list-group">
+                        <a th:each="cat : ${categories}"
+                           th:href="@{/galeria/{id}(id=${cat.id})}"
+                           th:classappend="${cat.id == category.id ? 'active' : ''}"
+                           class="list-group-item list-group-item-action"
+                           th:text="${cat.name}">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Galería de libros -->
+        <div class="col-lg-9 gallery-book">
+            <h2 class="mb-4" th:text="${category.name}">Ficción</h2>
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4" id="initialBookListContainer">
+                <!-- Libro 1 -->
+                <div class="col" th:each="book : ${books}" >
+                    <div class="card h-100">
+                        <img th:src="${book.urlImg}" class="card-img-top" th:alt="${book.title}">
+                        <div class="card-body">
+                            <h5 class="card-title" th:text="${book.title}">El nombre del viento</h5>
+                            <p class="card-text" th:text="${book.author.name}">Patrick Rothfuss</p>
+                            <p class="card-text"><small class="text-muted" th:text="'S/ ' + ${book.price}">S/
+                                89.90</small></p>
+                            <button class="btn btn-warning w-100">Añadir al carrito</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4" id="searchResultsContainer"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer-->
+<footer class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 mb-4 mb-md-0">
+                <div class="logo-social">
+                    <img src="/img/logo.png" alt="Crisol y Libros y Más" class="mb-3" style="max-width: 150px;">
+                    <p class="text-white">Síguenos en redes sociales</p>
+                    <ul class="list-unstyled d-flex">
+                        <li class="me-3"><a target="_blank" href="https://www.facebook.com" class="text-white fs-4"><i
+                                class="bi bi-facebook"></i></a></li>
+                        <li class="me-3"><a target="_blank" href="https://www.instagram.com" class="text-white fs-4"><i
+                                class="bi bi-instagram"></i></a></li>
+                        <li class="me-3"><a target="_blank" href="https://www.youtube.com" class="text-white fs-4"><i
+                                class="bi bi-youtube"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-md-2 mb-4 mb-md-0">
+                <h3 class="h6 mb-3 text-white fw-bold">Sobre Nosotros</h3>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a th:href="@{/somos}"
+                                        class="text-decoration-none text-secondary text-white">Quiénes somos</a></li>
+                    <li class="mb-2"><a th:href="@{/contactanos}"
+                                        class="text-decoration-none text-secondary text-white">Contacto</a></li>
+                    <li class="mb-2"><a th:href="@{/condiciones}"
+                                        class="text-decoration-none text-secondary text-white">Términos y
+                        Condiciones</a></li>
+                    <li class="mb-2"><a th:href="@{/preguntas}"
+                                        class="text-decoration-none text-secondary text-white">Preguntas Frecuentes</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="col-md-2 mb-4 mb-md-0">
+                <h3 class="h6 mb-3 text-white fw-bold">Categorías</h3>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="#" class="text-decoration-none text-secondary text-white">Los más
+                        vendidos</a></li>
+                    <li class="mb-2"><a href="#" class="text-decoration-none text-secondary text-white">Infantil</a>
+                    </li>
+                    <li class="mb-2"><a href="#" class="text-decoration-none text-secondary text-white">Ficción</a></li>
+                    <li class="mb-2"><a href="#" class="text-decoration-none text-secondary text-white">Historia</a>
+                    </li>
+                    <li class="mb-2"><a href="#" class="text-decoration-none text-secondary text-white">Juvenil</a></li>
+                    <li class="mb-2"><a href="#" class="text-decoration-none text-secondary text-white">Ebooks</a></li>
+                </ul>
+            </div>
+
+            <div class="col-md-3 mb-4 mb-md-0">
+                <h3 class="h6 mb-3 text-white fw-bold">Contáctanos</h3>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="tel:(01) 999-9999" class="text-decoration-none text-secondary text-white">(01)
+                        999-9999</a></li>
+                    <li class="mb-2 text-secondary text-white">Lun a Sáb de 8am a 8pm</li>
+                    <li class="mb-2"><a href="mailto:#" class="text-decoration-none text-secondary text-white">atencion@LaCatedral.com.pe</a>
+                    </li>
+                    <li class="mb-2"><a href="https://wa.me/#" class="text-decoration-none text-secondary text-white">Whatsapp
+                        ventas corporativas</a></li>
+                </ul>
+                <h3 class="h6 mt-4 mb-3 text-white fw-bold">Medios de pago</h3>
+                <div class="d-flex">
+                    <img src="https://www.crisol.com.pe/media/wysiwyg/payments/footer-paymet-image-2.png" alt="Visa"
+                         class="me-2" style="max-height: 90px;">
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <h3 class="h6 mb-3 text-white fw-bold">Libro de Reclamaciones</h3>
+                <div class="d-flex">
+                    <img src="https://www.crisol.com.pe/media/tem-banners/Item_libro_de_reclamaciones_128x80.png"
+                         alt="Libro de Reclamaciones" style="max-width: 140px;">
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
+        crossorigin="anonymous"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+        const searchResultsContainer = document.getElementById('searchResultsContainer'); // Nuevo contenedor para resultados
+        const initialBookListContainer = document.getElementById('initialBookListContainer'); // Contenedor inicial
+
+        function performSearch() {
+            const searchTerm = searchInput.value.trim();
+            if (searchTerm) {
+                fetch(`/buscar?query=${encodeURIComponent(searchTerm)}`)
+                    .then(response => response.json())
+                    .then(results => {
+                        // Limpiar el contenedor de resultados anterior
+                        searchResultsContainer.innerHTML = '';
+                        // Ocultar la lista inicial de libros
+                        initialBookListContainer.style.display = 'none';
+                        // Mostrar los resultados de la búsqueda
+                        displaySearchResults(results, searchResultsContainer);
+                    })
+                    .catch(error => {
+                        console.error('Error al buscar libros:', error);
+                        alert('Error al realizar la búsqueda.');
+                    });
+            } else {
+                // Si el campo de búsqueda está vacío, mostrar la lista inicial y limpiar los resultados
+                searchResultsContainer.innerHTML = '';
+                initialBookListContainer.style.display = 'grid'; // o 'flex' dependiendo de tu layout
+            }
+        }
+
+        searchButton.addEventListener('click', performSearch);
+
+        searchInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        function displaySearchResults(books, container) {
+            container.innerHTML = '';
+
+            if (books && books.length > 0) {
+                books.forEach(book => {
+                    const imageUrl = book.urlImg ?
+                        book.urlImg.startsWith('/') ? book.urlImg : `/img/${book.urlImg}`
+                        : '/img/default-book.jpg'; // Imagen por defecto si no hay imagen
+
+                    const bookCard = document.createElement('div');
+                    bookCard.classList.add('col');
+                    bookCard.innerHTML = `
+                        <div class="card h-100 gallery-card">
+                            <img src="${imageUrl}" class="card-img-top" alt="${book.title || 'Libro'}">
+                            <div class="card-body">
+                                <h5 class="card-title">${book.title || 'Sin título'}</h5>
+                                <p class="card-text">Autor: ${book.author && book.author.name ? book.author.name : 'Sin autor'}</p>
+                                <p class="card-text"><small class="text-muted">S/ ${book.price || 0}</small></p>
+                                <button class="btn btn-warning w-100">Añadir al carrito</button>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(bookCard);
+                });
+            } else {
+                container.innerHTML = '<p>No se encontraron libros con ese criterio de búsqueda.</p>';
+            }
+        }
+    });
+</script>
+</body>
+</html>
