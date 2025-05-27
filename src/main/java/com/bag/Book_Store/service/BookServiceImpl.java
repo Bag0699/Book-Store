@@ -1,7 +1,7 @@
 package com.bag.Book_Store.service;
 
 import com.bag.Book_Store.model.dto.BookRequest;
-import com.bag.Book_Store.model.dto.BookResponse;
+import com.bag.Book_Store.model.dto.response.BookSearchResponse;
 import com.bag.Book_Store.model.entity.Author;
 import com.bag.Book_Store.model.entity.Book;
 import com.bag.Book_Store.model.entity.Category;
@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -60,13 +59,13 @@ public class BookServiceImpl implements BookService{
     }
 
     @Override
-    public List<BookResponse> findAllBySuggestion(String query) {
+    public List<BookSearchResponse> findAllBySuggestion(String query) {
         String lowerCaseTitle = query.toLowerCase().trim();
         return inMemoryData.books.stream()
                 .filter(book ->
                         book.getTitle().toLowerCase().contains(lowerCaseTitle) ||
                         book.getAuthor().getName().toLowerCase().contains(lowerCaseTitle))
-                .map(book -> new BookResponse(book.getId(), book.getTitle()))
+                .map(book -> new BookSearchResponse(book.getId(), book.getTitle()))
                 .limit(5)
                 .collect(Collectors.toList());
     }

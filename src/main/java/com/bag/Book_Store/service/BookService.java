@@ -1,7 +1,7 @@
 package com.bag.Book_Store.service;
 
 import com.bag.Book_Store.model.dto.BookRequest;
-import com.bag.Book_Store.model.dto.BookResponse;
+import com.bag.Book_Store.model.dto.response.BookSearchResponse;
 import com.bag.Book_Store.model.entity.Book;
 
 import java.util.List;
@@ -13,6 +13,6 @@ public interface BookService {
     void deleteById(Long id);
     List<Book> searchByQuery(String query);
     List<Book> findAll();
-    List<BookResponse> findAllBySuggestion(String query);
+    List<BookSearchResponse> findAllBySuggestion(String query);
     Book save(BookRequest request);
 }

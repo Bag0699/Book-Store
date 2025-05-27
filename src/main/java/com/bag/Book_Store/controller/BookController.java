@@ -1,7 +1,7 @@
 package com.bag.Book_Store.controller;
 
 import com.bag.Book_Store.model.dto.BookRequest;
-import com.bag.Book_Store.model.dto.BookResponse;
+import com.bag.Book_Store.model.dto.response.BookSearchResponse;
 import com.bag.Book_Store.model.entity.Author;
 import com.bag.Book_Store.model.entity.Book;
 import com.bag.Book_Store.model.entity.Category;
@@ -81,8 +81,8 @@ public class BookController {
 
     @GetMapping("/buscar/sugerencia")
     @ResponseBody
-    public ResponseEntity<List<BookResponse>> obtenerSugerencias(@RequestParam("query") String query) {
-        List<BookResponse> books = bookService.findAllBySuggestion(query);
+    public ResponseEntity<List<BookSearchResponse>> obtenerSugerencias(@RequestParam("query") String query) {
+        List<BookSearchResponse> books = bookService.findAllBySuggestion(query);
         return ResponseEntity.ok(books);
     }
 

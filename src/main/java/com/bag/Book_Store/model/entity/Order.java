@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -27,7 +27,7 @@ public class Order {
     private User user;
 
     @Column(name = "order_date")
-    private LocalDateTime orderDate;
+    private LocalDate orderDate;
 
     @Column(name = "total_amount")
     private BigDecimal totalAmount;
