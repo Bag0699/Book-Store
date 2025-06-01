@@ -51,13 +51,15 @@ public class BookServiceImpl implements BookService{
         bookRepository.deleteById(id);
     }
 
+
     @Override
-    public List<Book> searchByQuery(String query) {
+    public List<BookResponse> searchByQuery(String query) {
         String lowerCaseTitle = query.toLowerCase().trim();
         return bookRepository.findAll().stream()
                 .filter(book ->
                         book.getTitle().toLowerCase().contains(lowerCaseTitle) ||
                         book.getAuthor().getName().toLowerCase().contains(lowerCaseTitle))
+                .map(bookMapper::toBookResponse)
                 .collect(Collectors.toList());
     }
 

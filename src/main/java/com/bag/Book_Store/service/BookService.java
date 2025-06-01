@@ -12,7 +12,7 @@ public interface BookService {
     List<BookResponse> findAllByCategory(Long id);
     BookResponse findById(Long id);
     void deleteById(Long id);
-    List<Book> searchByQuery(String query);
+    List<BookResponse> searchByQuery(String query);
     List<BookResponse> findAll();
     List<BookSearchResponse> findAllBySuggestion(String query);
     BookResponse save(BookRequest request);

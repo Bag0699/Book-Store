@@ -20,11 +20,15 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
+
+    @Lob
     private String sinopsis;
     private BigDecimal price;
     private String isbn;
     private String description;
+    @Column(name = "url_img")
     private String urlImg;
+
     private Integer stock;
     private String dimension;
 
