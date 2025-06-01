@@ -1,11 +1,16 @@
 package com.bag.Book_Store.service;
 
+import com.bag.Book_Store.exception.BookNotFoundException;
+import com.bag.Book_Store.mapper.BookMapper;
 import com.bag.Book_Store.model.dto.BookRequest;
+import com.bag.Book_Store.model.dto.response.BookResponse;
 import com.bag.Book_Store.model.dto.response.BookSearchResponse;
 import com.bag.Book_Store.model.entity.Author;
 import com.bag.Book_Store.model.entity.Book;
 import com.bag.Book_Store.model.entity.Category;
-import com.bag.Book_Store.repository.InMemoryData;
+import com.bag.Book_Store.repository.AuthorRepository;
+import com.bag.Book_Store.repository.BookRepository;
+import com.bag.Book_Store.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,37 +21,40 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService{
 
-    private final InMemoryData inMemoryData;
-    private final AuthorService authorService;
-    private final CategoryService categoryService;
+
+    private final AuthorRepository authorRepository;
+    private final CategoryRepository categoryRepository;
+    private final BookRepository bookRepository;
+    private final BookMapper bookMapper;
 
     @Override
-    public List<Book> findAllByCategory(Long id){
-        return inMemoryData.books.stream()
-                .filter(book -> id.equals(book.getCategory().getId()))
-                .toList();
+    public List<BookResponse> findAllByCategory(Long id){
+
+        return   bookRepository.findAllByCategory_Id(id)
+                .stream()
+                .map(bookMapper::toBookResponse)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Book findById(Long id){
-        return inMemoryData.books.stream()
-                .filter(book -> id.equals(book.getId()))
-                .findFirst()
-                .orElse(null);
+    public BookResponse findById(Long id){
+        return bookRepository.findById(id)
+                .map(bookMapper::toBookResponse)
+                .orElseThrow(BookNotFoundException::new);
     }
 
     @Override
     public void deleteById(Long id) {
-        inMemoryData.books.stream()
-                .filter(book -> id.equals(book.getId()))
-                .findFirst()
-                .ifPresent(inMemoryData.books::remove);
+        if(!bookRepository.existsById(id)) {
+            throw new BookNotFoundException();
+        }
+        bookRepository.deleteById(id);
     }
 
     @Override
     public List<Book> searchByQuery(String query) {
         String lowerCaseTitle = query.toLowerCase().trim();
-        return inMemoryData.books.stream()
+        return bookRepository.findAll().stream()
                 .filter(book ->
                         book.getTitle().toLowerCase().contains(lowerCaseTitle) ||
                         book.getAuthor().getName().toLowerCase().contains(lowerCaseTitle))
@@ -54,14 +62,17 @@ public class BookServiceImpl implements BookService{
     }
 
     @Override
-    public List<Book> findAll() {
-        return inMemoryData.books;
+    public List<BookResponse> findAll() {
+        return bookRepository.findAll()
+                .stream()
+                .map(bookMapper::toBookResponse)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<BookSearchResponse> findAllBySuggestion(String query) {
         String lowerCaseTitle = query.toLowerCase().trim();
-        return inMemoryData.books.stream()
+        return bookRepository.findAll().stream()
                 .filter(book ->
                         book.getTitle().toLowerCase().contains(lowerCaseTitle) ||
                         book.getAuthor().getName().toLowerCase().contains(lowerCaseTitle))
@@ -71,13 +82,14 @@ public class BookServiceImpl implements BookService{
     }
 
     @Override
-    public Book save(BookRequest request) {
-        Author author = authorService.findById(request.getAuthorId());
-        Category category = categoryService.findById(request.getCategoryId());
+    public BookResponse save(BookRequest request) {
+        Author author = authorRepository.findById(request.getAuthorId())
+                .orElse(null);
+        Category category = categoryRepository.findById(request.getCategoryId())
+                .orElse(null);
 
         if(author != null && category != null ) {
             Book book = new Book();
-            book.setId(request.getId());
             book.setTitle(request.getTitle());
             book.setAuthor(author);
             book.setSinopsis(request.getSinopsis());
@@ -86,8 +98,7 @@ public class BookServiceImpl implements BookService{
             book.setDescription(request.getDescription());
             book.setUrlImg(request.getUrlImg());
             book.setCategory(category);
-            inMemoryData.books.add(book);
-            return book;
+            return bookMapper.toBookResponse(bookRepository.save(book));
         } else {
             throw new IllegalArgumentException("El autor o la categoria no existe");
         }

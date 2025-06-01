@@ -1,4 +1,9 @@
 package com.bag.Book_Store.util;
 
 public enum Status {
+
+    PENDING,
+    ACCEPTED,
+    REJECTED,
+    CANCELLED
 }
