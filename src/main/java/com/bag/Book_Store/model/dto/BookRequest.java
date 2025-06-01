@@ -11,7 +11,6 @@ import java.math.BigDecimal;
 @Getter
 public class BookRequest {
 
-    private Long id;
     private String title;
     private Long authorId;
     private String sinopsis;
