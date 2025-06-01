@@ -99,7 +99,7 @@
         <div class="row row-cols-1 row-cols-md-3 g-4">
             <div class="col" th:each="book : ${books}">
                 <div class="card h-100">
-                    <img th:src ="${book.urlImg}" class="card-img-top" th:alt="${book.title}">
+                    <img th:src="${book.urlImg}" class="card-img-top" th:alt="${book.title}">
                     <div class="card-body text-center">
                         <h5 class="card-title" th:text="${book.title}">Don Quijote de la Mancha</h5>
                         <p class="card-text" th:text="${book.author.name}">Autor: Miguel de Cervantes</p>

@@ -1,7 +1,10 @@
 package com.bag.Book_Store.controller;
 
 import com.bag.Book_Store.model.dto.BookRequest;
-import com.bag.Book_Store.model.dto.BookResponse;
+import com.bag.Book_Store.model.dto.response.AuthorResponse;
+import com.bag.Book_Store.model.dto.response.BookResponse;
+import com.bag.Book_Store.model.dto.response.BookSearchResponse;
+import com.bag.Book_Store.model.dto.response.CategoryResponse;
 import com.bag.Book_Store.model.entity.Author;
 import com.bag.Book_Store.model.entity.Book;
 import com.bag.Book_Store.model.entity.Category;
@@ -27,16 +30,16 @@ public class BookController {
 
     @GetMapping("/")
     public String mostrarIndex(Model model) {
-        List<Book> books = bookService.findAll();
+        List<BookResponse> books = bookService.findAll();
         model.addAttribute("books", books);
         return "index";
     }
 
     @GetMapping("/listado")
     public String listado(Model model) {
-        List<Book> books = bookService.findAll();
-        List<Category> categories = categoryService.findAll();
-        List<Author> authors = authorService.findAll();
+        List<BookResponse> books = bookService.findAll();
+        List<CategoryResponse> categories = categoryService.findAll();
+        List<AuthorResponse> authors = authorService.findAll();
         model.addAttribute("books",books);
         model.addAttribute("categories",categories);
         model.addAttribute("authors",authors);
@@ -46,9 +49,9 @@ public class BookController {
     @GetMapping("/galeria/{id}")
     public String galeria(@PathVariable Long id, Model model) {
 
-        Category categoryFind = categoryService.findById(id);
-        List<Book> bookList = bookService.findAllByCategory(id);
-        List<Category> categoryList = categoryService.findAll();
+        CategoryResponse categoryFind = categoryService.findById(id);
+        List<BookResponse> bookList = bookService.findAllByCategory(id);
+        List<CategoryResponse> categoryList = categoryService.findAll();
 
         model.addAttribute("books", bookList);
         model.addAttribute("category", categoryFind);
@@ -58,7 +61,7 @@ public class BookController {
 
     @GetMapping("/libro/{id}")
     public String libro(@PathVariable Long id, Model model) {
-        Book book = bookService.findById(id);
+        BookResponse book = bookService.findById(id);
         if (book != null) {
             model.addAttribute("book", book);
             return "libro";
@@ -68,8 +71,8 @@ public class BookController {
 
     @GetMapping("/buscar")
     @ResponseBody
-    public ResponseEntity<List<Book>> buscarLibros(@RequestParam("query") String query) {
-        List<Book> books = bookService.searchByQuery(query);
+    public ResponseEntity<List<BookResponse>> buscarLibros(@RequestParam("query") String query) {
+        List<BookResponse> books = bookService.searchByQuery(query);
         return ResponseEntity.ok(books);
     }
 
@@ -81,14 +84,14 @@ public class BookController {
 
     @GetMapping("/buscar/sugerencia")
     @ResponseBody
-    public ResponseEntity<List<BookResponse>> obtenerSugerencias(@RequestParam("query") String query) {
-        List<BookResponse> books = bookService.findAllBySuggestion(query);
+    public ResponseEntity<List<BookSearchResponse>> obtenerSugerencias(@RequestParam("query") String query) {
+        List<BookSearchResponse> books = bookService.findAllBySuggestion(query);
         return ResponseEntity.ok(books);
     }
 
     @PostMapping("/listado")
-    public ResponseEntity<Book> guardarLibro(@RequestBody BookRequest request) {
-        Book book = bookService.save(request);
+    public ResponseEntity<BookResponse> guardarLibro(@RequestBody BookRequest request) {
+        BookResponse book = bookService.save(request);
         return ResponseEntity.ok(book);
     }
 }

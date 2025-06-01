@@ -244,8 +244,11 @@
 
             if (books && books.length > 0) {
                 books.forEach(book => {
-                    const imageUrl = book.urlImg ?
-                        book.urlImg.startsWith('/') ? book.urlImg : `/img/${book.urlImg}`
+                    console.log("Libro en resultados de búsqueda (desde JS):", book);
+                    console.log("book.urlImg para este libro (desde JS):", book.urlImg);
+
+                    const imageUrl = book.url_img ?
+                        book.url_img.startsWith('/') ? book.url_img : `/img/${book.url_img}`
                         : '/img/default-book.jpg'; // Imagen por defecto si no hay imagen
 
                     const bookCard = document.createElement('div');
