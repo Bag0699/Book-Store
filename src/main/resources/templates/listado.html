@@ -1,316 +1,344 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-  <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Listado de libros</title>
     <link rel="shortcut icon" href="/img/logo-favicon.ico" type="image/x-icon">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" th:href="@{/css/style.css}">
-  </head>
+</head>
 
-  <body>
-    <!-- Header - Top bar y main header navbar-->
-    <header>
-      <div class="top-bar text-center text-white p-3">
+<body>
+<!-- Header - Top bar y main header navbar-->
+<header>
+    <div class="top-bar text-center text-white p-3">
         <span>Por esta semana compra a 10% de descuento</span>
-      </div>
-      <div class="main-header d-flex justify-content-between gap-4 p-3">
+    </div>
+    <div class="main-header d-flex justify-content-between gap-4 p-3">
         <div class="logo">
-          <a th:href="@{/}">
-            <img src="/img/logo.png" alt="imagen del logo">
-          </a>
+            <a th:href="@{/}">
+                <img src="/img/logo.png" alt="imagen del logo">
+            </a>
         </div>
-        <div class="search input-group mb-3">
-          <input type="text" placeholder="Buscar" class="form-control">
-          <button class="btn btn-outline-warning" type="button" id="button-addon2">
-            <i class="icon-cart bi bi-search" style="color:var(--color-principal); font-size: 18px;"></i>
-          </button>
+        <div class="search input-group mb-3 dropdown">
+            <input type="text" id="searchInputNav" placeholder="Buscar libros..." class="form-control"
+                   autocomplete="off" data-bs-toggle="dropdown" aria-expanded="false">
+            <button class="btn btn-outline-warning" type="button" id="button-addon2">
+                <i class="icon-cart bi bi-search" style="color:var(--color-principal); font-size: 18px;"></i>
+            </button>
+            <ul class="dropdown-menu w-100" id="suggestionsDropdown" aria-labelledby="searchInput">
+                <!-- Las sugerencias se agregarán aquí dinámicamente -->
+            </ul>
         </div>
         <div class="cart ">
-          <i class="bi bi-cart" style="color:#000; font-size: 24px;"></i>
+            <i class="bi bi-cart" style="color:#000; font-size: 24px;"></i>
         </div>
-      </div>
-      <nav class=" main-nav navbar navbar-expand-lg ">
-        <div class="container-fluid">
-          <a class="navbar-brand" th:href="@{/}">Inicio</a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-            <div class="navbar-nav">
-              <a class="nav-link" href="#">Lo más vendido</a>
-              <a class="nav-link" th:href="@{/galeria/7}">Infantil</a>
-              <a class="nav-link" th:href="@{/galeria/1}">Ficción</a>
-              <a class="nav-link" th:href="@{/galeria/8}">Historia</a>
-              <a class="nav-link" th:href="@{/galeria/9}">Juvenil</a>
-              <a class="nav-link" href="#">eBooks</a>
-            </div>
-          </div>
-        </div>
-      </nav>
-    </header>
-
-    <!-- Portada -->
-    <div class="container-fluid bg-image" style="background-image: url('/img/banner.webp'); background-size: cover; background-position: center; color: white; text-align: center; padding: 100px 0;">
-      <div class="container">
-        <h1 >Listado de Libros</h1>
-        <p class="lead">En la Catedral, encontrará una amplia variedad de libros de ficción que van desde historias de intriga, aventuras, romance y más.</p>
-      </div>
     </div>
+    <nav class=" main-nav navbar navbar-expand-lg ">
+        <div class="container-fluid">
+            <a class="navbar-brand" th:href="@{/}">Inicio</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+                    aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <a class="nav-link" href="#">Lo más vendido</a>
+                    <a class="nav-link" th:href="@{/galeria/7}">Infantil</a>
+                    <a class="nav-link" th:href="@{/galeria/1}">Ficción</a>
+                    <a class="nav-link" th:href="@{/galeria/8}">Historia</a>
+                    <a class="nav-link" th:href="@{/galeria/9}">Juvenil</a>
+                    <a class="nav-link" href="#">eBooks</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
 
-    <!-- Listado de los libros -->
-    <div class="container mt-5 mb-4">
-      <div class="d-flex justify-content-between align-items-center mb-4">
+<!-- Portada -->
+<div class="container-fluid bg-image"
+     style="background-image: url('/img/banner.webp'); background-size: cover; background-position: center; color: white; text-align: center; padding: 100px 0;">
+    <div class="container">
+        <h1>Listado de Libros</h1>
+        <p class="lead">En la Catedral, encontrará una amplia variedad de libros de ficción que van desde historias de
+            intriga, aventuras, romance y más.</p>
+    </div>
+</div>
+
+<!-- Listado de los libros -->
+<div class="container mt-5 mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Listado de Libros</h2>
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#agregarLibroModal">
-          <i class="bi bi-plus-lg me-1"></i> Agregar Libro
+            <i class="bi bi-plus-lg me-1"></i> Agregar Libro
         </button>
-      </div>
-      <div class="row">
+    </div>
+    <div class="row">
         <div class="col-12">
-          <div class="card">
-            <div class="card-header">
-              <h3 class="card-title">Listado de Libros</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Listado de Libros</h3>
+                </div>
+                <div class="card-body">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th>Portada</th>
+                            <th>Información</th>
+                            <th>ISBN</th>
+                            <th>Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody th:each="book:${books}">
+                        <tr>
+                            <td>
+                                <img th:src="${book.urlImg}" alt="Portada del libro" class="img-thumbnail"
+                                     style="width: 100px; height: 150px;">
+                            </td>
+                            <td>
+                                <h5 class="mb-1" th:text="${book.title}">Nombre del Libro</h5>
+                                <p class="mb-0" th:text="${book.author.name}">Autor del Libro</p>
+                            </td>
+                            <td th:text="${book.isbn}">978-3-16-148410-0</td>
+                            <td>
+                                <button type="button"
+                                        class="btn btn-warning btn-sm"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#editModal"
+                                        th:data-title="${book.title}"
+                                        th:data-author="${book.author.name}"
+                                        th:data-isbn="${book.isbn}">
+                                    <i class="bi bi-pencil"></i> Editar
+                                </button>
+                                <button type="button" class="btn btn-danger btn-sm"
+                                        th:onclick="'deleteBook(' + ${book.id} + ')'">
+                                    <i class="bi bi-trash"></i> Eliminar
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <div class="card-body">
-              <table class="table table-hover">
-                <thead>
-                <tr>
-                  <th>Portada</th>
-                  <th>Información</th>
-                  <th>ISBN</th>
-                  <th>Acciones</th>
-                </tr>
-                </thead>
-                <tbody th:each="book:${books}">
-                <tr>
-                  <td>
-                    <img th:src="${book.urlImg}" alt="Portada del libro" class="img-thumbnail" style="width: 100px; height: 150px;">
-                  </td>
-                  <td>
-                    <h5 class="mb-1" th:text="${book.title}">Nombre del Libro</h5>
-                    <p class="mb-0" th:text="${book.author.name}">Autor del Libro</p>
-                  </td>
-                  <td th:text="${book.isbn}">978-3-16-148410-0</td>
-                  <td>
-                    <button type="button"
-                            class="btn btn-warning btn-sm"
-                            data-bs-toggle="modal"
-                            data-bs-target="#editModal"
-                            th:data-title="${book.title}"
-                            th:data-author="${book.author.name}"
-                            th:data-isbn="${book.isbn}">
-                      <i class="bi bi-pencil"></i> Editar
-                    </button>
-                    <button type="button" class="btn btn-danger btn-sm" th:onclick="'deleteBook(' + ${book.id} + ')'">
-                      <i class="bi bi-trash"></i> Eliminar
-                    </button>
-                  </td>
-                </tr>
-                </tbody>
-              </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Edición -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Editar Libro</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-          </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="editTitle" class="form-label">Título</label>
+                        <input type="text" class="form-control" id="editTitle" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editAuthor" class="form-label">Autor</label>
+                        <input type="text" class="form-control" id="editAuthor" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editISBN" class="form-label">ISBN</label>
+                        <input type="text" class="form-control" id="editISBN" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editImage" class="form-label">Imagen de Portada</label>
+                        <input type="file" class="form-control" id="editImage" accept="image/*">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="saveChanges()">Guardar Cambios</button>
+            </div>
         </div>
-      </div>
     </div>
+</div>
 
-    <!-- Modal de Edición -->
-    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
+<!-- Modal Agregar Libro -->
+<div class="modal fade" id="agregarLibroModal" tabindex="-1" aria-labelledby="agregarLibroModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="editModalLabel">Editar Libro</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <form>
-              <div class="mb-3">
-                <label for="editTitle" class="form-label">Título</label>
-                <input type="text" class="form-control" id="editTitle" required>
-              </div>
-              <div class="mb-3">
-                <label for="editAuthor" class="form-label">Autor</label>
-                <input type="text" class="form-control" id="editAuthor" required>
-              </div>
-              <div class="mb-3">
-                <label for="editISBN" class="form-label">ISBN</label>
-                <input type="text" class="form-control" id="editISBN" required>
-              </div>
-              <div class="mb-3">
-                <label for="editImage" class="form-label">Imagen de Portada</label>
-                <input type="file" class="form-control" id="editImage" accept="image/*">
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-primary" onclick="saveChanges()">Guardar Cambios</button>
-          </div>
+            <div class="modal-header">
+                <h5 class="modal-title" id="agregarLibroModalLabel">Agregar Nuevo Libro</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formAgregarLibro">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="libroId" class="form-label">ID del Libro *</label>
+                                <input type="text" class="form-control" id="libroId" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="titulo" class="form-label">Título *</label>
+                                <input type="text" class="form-control" id="titulo" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="autor" class="form-label">Autor *</label>
+                                <select class="form-select" id="autor" required>
+                                    <option value="" selected disabled>Seleccione un autor</option>
+                                    <option th:each="author : ${authors}"
+                                            th:value="${author.id}"
+                                            th:text="${author.name}">
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="categoria" class="form-label">Categoría *</label>
+                                <select class="form-select" id="categoria" required>
+                                    <option value="" selected disabled>Seleccione una categoría</option>
+                                    <option th:each="category : ${categories}"
+                                            th:value="${category.id}"
+                                            th:text="${category.name}">
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="isbn" class="form-label">ISBN *</label>
+                                <input type="text" class="form-control" id="isbn" required>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label for="sinopsis" class="form-label">Sinopsis</label>
+                                <textarea class="form-control" id="sinopsis" rows="2"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label for="descripcion" class="form-label">Descripción</label>
+                                <textarea class="form-control" id="descripcion" rows="3"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="precio" class="form-label">Precio (S/) *</label>
+                                <input type="number" step="0.01" class="form-control" id="precio" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="imagen" class="form-label">URL de la imagen</label>
+                                <input type="text" class="form-control" id="imagen" placeholder="Ej: img/libro1.jpg">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="guardarLibro()">Guardar Libro</button>
+            </div>
         </div>
-      </div>
     </div>
+</div>
 
-    <!-- Modal Agregar Libro -->
-    <div class="modal fade" id="agregarLibroModal" tabindex="-1" aria-labelledby="agregarLibroModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="agregarLibroModalLabel">Agregar Nuevo Libro</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <form id="formAgregarLibro">
-              <div class="row g-3">
-                <div class="col-md-6">
-                  <div class="mb-3">
-                    <label for="libroId" class="form-label">ID del Libro *</label>
-                    <input type="text" class="form-control" id="libroId" required>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="mb-3">
-                    <label for="titulo" class="form-label">Título *</label>
-                    <input type="text" class="form-control" id="titulo" required>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="mb-3">
-                    <label for="autor" class="form-label">Autor *</label>
-                    <select class="form-select" id="autor" required>
-                      <option value="" selected disabled>Seleccione un autor</option>
-                      <option th:each="author : ${authors}"
-                              th:value="${author.id}"
-                              th:text="${author.name}">
-                      </option>
-                    </select>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="mb-3">
-                    <label for="categoria" class="form-label">Categoría *</label>
-                    <select class="form-select" id="categoria" required>
-                      <option value="" selected disabled>Seleccione una categoría</option>
-                      <option th:each="category : ${categories}"
-                              th:value="${category.id}"
-                              th:text="${category.name}">
-                      </option>
-                    </select>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="mb-3">
-                    <label for="isbn" class="form-label">ISBN *</label>
-                    <input type="text" class="form-control" id="isbn" required>
-                  </div>
-                </div>
-                <div class="col-12">
-                  <div class="mb-3">
-                    <label for="sinopsis" class="form-label">Sinopsis</label>
-                    <textarea class="form-control" id="sinopsis" rows="2"></textarea>
-                  </div>
-                </div>
-                <div class="col-12">
-                  <div class="mb-3">
-                    <label for="descripcion" class="form-label">Descripción</label>
-                    <textarea class="form-control" id="descripcion" rows="3"></textarea>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="mb-3">
-                    <label for="precio" class="form-label">Precio (S/) *</label>
-                    <input type="number" step="0.01" class="form-control" id="precio" required>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="mb-3">
-                    <label for="imagen" class="form-label">URL de la imagen</label>
-                    <input type="text" class="form-control" id="imagen" placeholder="Ej: img/libro1.jpg">
-                  </div>
-                </div>
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-primary" onclick="guardarLibro()">Guardar Libro</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Footer-->
-    <footer class="py-5">
-      <div class="container">
+<!-- Footer-->
+<footer class="py-5">
+    <div class="container">
         <div class="row">
-          <div class="col-md-3 mb-4 mb-md-0">
-            <div class="logo-social">
-              <img src="/img/logo.png" alt="Crisol y Libros y Más" class="mb-3" style="max-width: 150px;">
-              <p class="text-white">Síguenos en redes sociales</p>
-              <ul class="list-unstyled d-flex">
-                <li class="me-3"><a target="_blank" href="https://www.facebook.com" class="text-white fs-4"><i class="bi bi-facebook"></i></a></li>
-                <li class="me-3"><a target="_blank" href="https://www.instagram.com" class="text-white fs-4"><i class="bi bi-instagram"></i></a></li>
-                <li class="me-3"><a target="_blank" href="https://www.youtube.com" class="text-white fs-4"><i class="bi bi-youtube"></i></a></li>
-              </ul>
+            <div class="col-md-3 mb-4 mb-md-0">
+                <div class="logo-social">
+                    <img src="/img/logo.png" alt="Crisol y Libros y Más" class="mb-3" style="max-width: 150px;">
+                    <p class="text-white">Síguenos en redes sociales</p>
+                    <ul class="list-unstyled d-flex">
+                        <li class="me-3"><a target="_blank" href="https://www.facebook.com" class="text-white fs-4"><i
+                                class="bi bi-facebook"></i></a></li>
+                        <li class="me-3"><a target="_blank" href="https://www.instagram.com" class="text-white fs-4"><i
+                                class="bi bi-instagram"></i></a></li>
+                        <li class="me-3"><a target="_blank" href="https://www.youtube.com" class="text-white fs-4"><i
+                                class="bi bi-youtube"></i></a></li>
+                    </ul>
+                </div>
             </div>
-          </div>
 
-          <div class="col-md-2 mb-4 mb-md-0">
-            <h3 class="h6 mb-3 text-white fw-bold">Sobre Nosotros</h3>
-            <ul class="list-unstyled">
-              <li class="mb-2"><a th:href="@{/somos}"
-                                  class="text-decoration-none text-secondary text-white">Quiénes somos</a></li>
-              <li class="mb-2"><a th:href="@{/contactanos}"
-                                  class="text-decoration-none text-secondary text-white">Contacto</a></li>
-              <li class="mb-2"><a th:href="@{/condiciones}"
-                                  class="text-decoration-none text-secondary text-white">Términos y Condiciones</a></li>
-              <li class="mb-2"><a th:href="@{/preguntas}"
-                                  class="text-decoration-none text-secondary text-white">Preguntas Frecuentes</a></li>
-            </ul>
-          </div>
-
-          <div class="col-md-2 mb-4 mb-md-0">
-            <h3 class="h6 mb-3 text-white fw-bold">Categorías</h3>
-            <ul class="list-unstyled">
-              <li class="mb-2"><a href="#" class="text-decoration-none text-secondary text-white">Los más vendidos</a></li>
-              <li class="mb-2"><a href="#" class="text-decoration-none text-secondary text-white">Infantil</a></li>
-              <li class="mb-2"><a href="#" class="text-decoration-none text-secondary text-white">Ficción</a></li>
-              <li class="mb-2"><a href="#" class="text-decoration-none text-secondary text-white">Historia</a></li>
-              <li class="mb-2"><a href="#" class="text-decoration-none text-secondary text-white">Juvenil</a></li>
-              <li class="mb-2"><a href="#" class="text-decoration-none text-secondary text-white">Ebooks</a></li>
-            </ul>
-          </div>
-
-          <div class="col-md-3 mb-4 mb-md-0">
-            <h3 class="h6 mb-3 text-white fw-bold">Contáctanos</h3>
-            <ul class="list-unstyled">
-              <li class="mb-2"><a href="tel:(01) 999-9999" class="text-decoration-none text-secondary text-white">(01) 999-9999</a></li>
-              <li class="mb-2 text-secondary text-white">Lun a Sáb de 8am a 8pm</li>
-              <li class="mb-2"><a href="mailto:#" class="text-decoration-none text-secondary text-white">atencion@LaCatedral.com.pe</a></li>
-              <li class="mb-2"><a href="https://wa.me/#" class="text-decoration-none text-secondary text-white">Whatsapp ventas corporativas</a></li>
-            </ul>
-            <h3 class="h6 mt-4 mb-3 text-white fw-bold">Medios de pago</h3>
-            <div class="d-flex">
-              <img src="https://www.crisol.com.pe/media/wysiwyg/payments/footer-paymet-image-2.png" alt="Visa" class="me-2" style="max-height: 90px;">
+            <div class="col-md-2 mb-4 mb-md-0">
+                <h3 class="h6 mb-3 text-white fw-bold">Sobre Nosotros</h3>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a th:href="@{/somos}"
+                                        class="text-decoration-none text-secondary text-white">Quiénes somos</a></li>
+                    <li class="mb-2"><a th:href="@{/contactanos}"
+                                        class="text-decoration-none text-secondary text-white">Contacto</a></li>
+                    <li class="mb-2"><a th:href="@{/condiciones}"
+                                        class="text-decoration-none text-secondary text-white">Términos y
+                        Condiciones</a></li>
+                    <li class="mb-2"><a th:href="@{/preguntas}"
+                                        class="text-decoration-none text-secondary text-white">Preguntas Frecuentes</a>
+                    </li>
+                </ul>
             </div>
-          </div>
 
-          <div class="col-md-2">
-            <h3 class="h6 mb-3 text-white fw-bold">Libro de Reclamaciones</h3>
-            <div class="d-flex">
-              <img src="https://www.crisol.com.pe/media/tem-banners/Item_libro_de_reclamaciones_128x80.png" alt="Libro de Reclamaciones" style="max-width: 140px;">
+            <div class="col-md-2 mb-4 mb-md-0">
+                <h3 class="h6 mb-3 text-white fw-bold">Categorías</h3>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="#" class="text-decoration-none text-secondary text-white">Los más
+                        vendidos</a></li>
+                    <li class="mb-2"><a href="#" class="text-decoration-none text-secondary text-white">Infantil</a>
+                    </li>
+                    <li class="mb-2"><a href="#" class="text-decoration-none text-secondary text-white">Ficción</a></li>
+                    <li class="mb-2"><a href="#" class="text-decoration-none text-secondary text-white">Historia</a>
+                    </li>
+                    <li class="mb-2"><a href="#" class="text-decoration-none text-secondary text-white">Juvenil</a></li>
+                    <li class="mb-2"><a href="#" class="text-decoration-none text-secondary text-white">Ebooks</a></li>
+                </ul>
             </div>
-          </div>
+
+            <div class="col-md-3 mb-4 mb-md-0">
+                <h3 class="h6 mb-3 text-white fw-bold">Contáctanos</h3>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="tel:(01) 999-9999" class="text-decoration-none text-secondary text-white">(01)
+                        999-9999</a></li>
+                    <li class="mb-2 text-secondary text-white">Lun a Sáb de 8am a 8pm</li>
+                    <li class="mb-2"><a href="mailto:#" class="text-decoration-none text-secondary text-white">atencion@LaCatedral.com.pe</a>
+                    </li>
+                    <li class="mb-2"><a href="https://wa.me/#" class="text-decoration-none text-secondary text-white">Whatsapp
+                        ventas corporativas</a></li>
+                </ul>
+                <h3 class="h6 mt-4 mb-3 text-white fw-bold">Medios de pago</h3>
+                <div class="d-flex">
+                    <img src="https://www.crisol.com.pe/media/wysiwyg/payments/footer-paymet-image-2.png" alt="Visa"
+                         class="me-2" style="max-height: 90px;">
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <h3 class="h6 mb-3 text-white fw-bold">Libro de Reclamaciones</h3>
+                <div class="d-flex">
+                    <img src="https://www.crisol.com.pe/media/tem-banners/Item_libro_de_reclamaciones_128x80.png"
+                         alt="Libro de Reclamaciones" style="max-width: 140px;">
+                </div>
+            </div>
         </div>
-      </div>
-    </footer>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
+    </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
+        crossorigin="anonymous"></script>
 
-    <script>
-      const editModal = document.getElementById('editModal');
-      editModal.addEventListener('show.bs.modal', event => {
+<script th:src="@{/js/search.js}"></script>
+
+<script>
+    const editModal = document.getElementById('editModal');
+    editModal.addEventListener('show.bs.modal', event => {
 
         const button = event.relatedTarget;
 
@@ -325,92 +353,92 @@
         editTitleInput.placeholder = title;
         editAuthorInput.placeholder = author;
         editISBNInput.placeholder = isbn;
-      });
-    </script>
-    <script th:inline="javascript">
-      function deleteBook(bookId) {
+    });
+</script>
+<script th:inline="javascript">
+    function deleteBook(bookId) {
         if (confirm('¿Estás seguro de que deseas eliminar este libro?')) {
-          fetch('/listado/' + bookId, {
-            method: 'DELETE'
-          })
-                  .then(response => {
+            fetch('/listado/' + bookId, {
+                method: 'DELETE'
+            })
+                .then(response => {
                     if (response.ok) {
-                      window.location.reload();
+                        window.location.reload();
                     } else {
-                      alert('Error al eliminar el libro.');
+                        alert('Error al eliminar el libro.');
                     }
-                  })
-                  .catch(error => {
+                })
+                .catch(error => {
                     console.error('Error:', error);
                     alert('Error de conexión al eliminar el libro.');
-                  });
+                });
         }
-      }
-    </script>
-    <script>
-      async function guardarLibro() {
+    }
+</script>
+<script>
+    async function guardarLibro() {
         const form = document.getElementById('formAgregarLibro');
         if (!form.checkValidity()) {
-          form.classList.add('was-validated');
-          return;
+            form.classList.add('was-validated');
+            return;
         }
 
         const bookRequest = {
-          id:parseInt(document.getElementById('libroId').value),
-          title: document.getElementById('titulo').value,
-          authorId: parseInt(document.getElementById('autor').value),
-          categoryId: parseInt(document.getElementById('categoria').value),
-          isbn: document.getElementById('isbn').value,
-          sinopsis: document.getElementById('sinopsis').value,
-          description: document.getElementById('descripcion').value,
-          price: parseFloat(document.getElementById('precio').value),
-          urlImg: document.getElementById('imagen').value || null
+            id: parseInt(document.getElementById('libroId').value),
+            title: document.getElementById('titulo').value,
+            authorId: parseInt(document.getElementById('autor').value),
+            categoryId: parseInt(document.getElementById('categoria').value),
+            isbn: document.getElementById('isbn').value,
+            sinopsis: document.getElementById('sinopsis').value,
+            description: document.getElementById('descripcion').value,
+            price: parseFloat(document.getElementById('precio').value),
+            urlImg: document.getElementById('imagen').value || null
         };
 
         try {
-          const response = await fetch('/listado', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-Requested-With': 'XMLHttpRequest'
-            },
-            body: JSON.stringify(bookRequest)
-          });
+            const response = await fetch('/listado', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify(bookRequest)
+            });
 
-          if (response.ok) {
-            const data = await response.json();
-            alert('Libro guardado correctamente con ID: ' + data.id);
-            const modal = bootstrap.Modal.getInstance(document.getElementById('agregarLibroModal'));
-            modal.hide();
-            form.reset();
-            form.classList.remove('was-validated');
-            // Recargar la página para ver los cambios
-            location.reload();
-          } else {
-            const error = await response.json();
-            throw new Error(error.message || 'Error al guardar el libro');
-          }
+            if (response.ok) {
+                const data = await response.json();
+                alert('Libro guardado correctamente con ID: ' + data.id);
+                const modal = bootstrap.Modal.getInstance(document.getElementById('agregarLibroModal'));
+                modal.hide();
+                form.reset();
+                form.classList.remove('was-validated');
+                // Recargar la página para ver los cambios
+                location.reload();
+            } else {
+                const error = await response.json();
+                throw new Error(error.message || 'Error al guardar el libro');
+            }
         } catch (error) {
-          console.error('Error:', error);
-          alert('Error al guardar el libro: ' + error.message);
+            console.error('Error:', error);
+            alert('Error al guardar el libro: ' + error.message);
         }
-      }
+    }
 
-      function confirmDelete(bookId) {
+    function confirmDelete(bookId) {
         if (confirm('¿Estás seguro de que deseas eliminar este libro?')) {
-          // Aquí iría la lógica para eliminar el libro
-          console.log('Eliminando libro con ID:', bookId);
-          // Ejemplo: window.location.href = '/libros/eliminar/' + bookId;
+            // Aquí iría la lógica para eliminar el libro
+            console.log('Eliminando libro con ID:', bookId);
+            // Ejemplo: window.location.href = '/libros/eliminar/' + bookId;
         }
-      }
+    }
 
-      function saveChanges() {
+    function saveChanges() {
         // Aquí iría la lógica para guardar los cambios editados
         alert('Cambios guardados correctamente');
         // Cerrar el modal de edición
         const editModal = bootstrap.Modal.getInstance(document.getElementById('editarLibroModal'));
         editModal.hide();
-      }
-    </script>
-  </body>
+    }
+</script>
+</body>
 </html>

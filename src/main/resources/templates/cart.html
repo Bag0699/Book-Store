@@ -210,22 +210,8 @@
         const clearCartBtn = document.getElementById('clear-cart-btn');
         const emptyCartMessage = document.getElementById('empty-cart-message');
 
-        // Accede a la variable global 'cart' y las funciones de cart.js
-        // Asegúrate de que cart.js se cargue antes que este script, lo cual ya hace con th:src.
-        // Si cart.js encapsula todo en un DOMContentLoaded, podrías necesitar exponer 'cart'
-        // o funciones como 'saveCart', 'loadCart', 'updateCartIcon', 'addToCart' globalmente
-        // o refactorizar cart.js para que las funciones de gestión del carrito sean módulos.
-        // Por ahora, asumiremos que las funciones addToCart, loadCart, saveCart, updateCartIcon y
-        // la variable 'cart' (o una forma de accederla) están disponibles.
-        // Si no lo están, necesitamos modificar cart.js ligeramente.
-        // Por la simplicidad de este ejemplo, re-declararemos algunas lógicas.
-
         let cart = []; // Volvemos a declarar la variable localmente para esta página, si no está global
-        // Deberías usar las funciones y la variable 'cart' que vienen de cart.js
-        // Pero para hacer este script autocontenido y que no dependa de cómo exportas de cart.js:
 
-        // --- FUNCIONES BÁSICAS DE GESTIÓN DE CARRITO (DUPLICADAS PARA SIMPLICIDAD SI NO HAY MÓDULOS) ---
-        // IDEALMENTE: estas funciones Vienen de cart.js
         function loadCartLocal() {
             const storedCart = localStorage.getItem('cart');
             if (storedCart) {
@@ -238,9 +224,7 @@
         }
 
         function updateCartIconGlobal() {
-            // Esta función debería ser la misma que en cart.js para mantener la consistencia
-            // Si el cart.js actualiza el icono, no necesitas hacer nada aquí para el icono global
-            // Pero es bueno tener una referencia si tuvieras múltiples contadores
+
             const globalCartIconCount = document.getElementById('cart-item-count');
             if (globalCartIconCount) {
                 const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -327,8 +311,7 @@
                 return;
             }
 
-            // Aquí es donde enviarías los datos del carrito al backend para procesar la orden
-            // Por ahora, solo simularemos un proceso exitoso
+
             console.log('Simulando compra con los siguientes ítems:', cart);
 
             // Ejemplo de cómo enviarías datos a tu backend (requerirá un endpoint en el backend)

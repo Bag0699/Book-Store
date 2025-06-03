@@ -22,4 +22,9 @@ public class NavigationController {
         return "preguntas";
     }
 
+    @GetMapping("/cart")
+    public String showCartPage() {
+        return "cart";
+    }
+
 }
