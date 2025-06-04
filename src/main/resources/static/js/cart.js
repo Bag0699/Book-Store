@@ -1,4 +1,3 @@
-// /static/js/cart.js
 document.addEventListener('DOMContentLoaded', function() {
     const cartIconCount = document.getElementById('cart-item-count');
     let cart = []; // Array para almacenar los ítems del carrito
@@ -41,17 +40,44 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         saveCart();
         updateCartIcon();
+        // Puedes cambiar esto por un modal o una notificación más sutil
         alert(`"${title}" añadido al carrito!`);
     }
 
-    // --- Event Listeners ---
-    // Delegación de eventos para los botones "Añadir al carrito"
-    // Esto es CLAVE: el listener se adjunta al body y funcionará para TODOS los elementos
-    // con la clase 'add-to-cart-btn', sin importar cuándo fueron añadidos al DOM.
+    // --- Lógica para Eliminar del Carrito ---
+    function removeFromCart(bookId) {
+        cart = cart.filter(item => item.bookId !== bookId);
+        saveCart();
+        updateCartIcon();
+        // Recargar la lista de ítems si estás en la página del carrito
+        if (window.location.pathname === '/carrito') {
+            displayCartItems();
+        }
+    }
+
+    // --- Lógica para Actualizar Cantidad en Carrito ---
+    function updateItemQuantity(bookId, newQuantity) {
+        const item = cart.find(item => item.bookId === bookId);
+        if (item) {
+            if (newQuantity <= 0) {
+                removeFromCart(bookId); // Si la cantidad es 0 o menos, eliminar
+            } else {
+                item.quantity = newQuantity;
+                saveCart();
+                updateCartIcon();
+                // Recargar la lista de ítems si estás en la página del carrito
+                if (window.location.pathname === '/carrito') {
+                    displayCartItems();
+                }
+            }
+        }
+    }
+
+
+    // --- Event Listeners para la página principal de la galería ---
     document.body.addEventListener('click', function(event) {
         if (event.target.classList.contains('add-to-cart-btn')) {
             const button = event.target;
-            // Asegúrate de que los data-atributos se lean correctamente
             const bookId = parseInt(button.dataset.bookId);
             const title = button.dataset.bookTitle;
             const price = parseFloat(button.dataset.bookPrice);
@@ -66,6 +92,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Hacemos las funciones accesibles globalmente para usarlas en la página del carrito
+    window.cartFunctions = {
+        loadCart: loadCart,
+        saveCart: saveCart,
+        addToCart: addToCart,
+        removeFromCart: removeFromCart,
+        updateItemQuantity: updateItemQuantity,
+        getCart: () => cart // Función para obtener el carrito actual
+    };
+
     // --- Inicialización ---
-    loadCart(); // Cargar el carrito al inicio de la página, una vez que el DOM está listo
+    loadCart(); // Cargar el carrito al inicio de la página
 });
+

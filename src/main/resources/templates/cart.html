@@ -1,39 +1,51 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carrito de Compras</title>
-    <link rel="shortcut icon" href="/img/logo-favicon.ico" type="image/x-icon">
+    <title>Tu Carrito de Compras</title>
+    <link rel="shortcut icon" href="/img/logo-favicon.ico" type="image/x-x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <style>
-        .cart-item-img {
+        .cart-item-image {
             width: 80px;
             height: 120px;
-            object-fit: contain;
+            object-fit: cover;
             margin-right: 15px;
         }
-        .quantity-controls button {
-            width: 30px;
-            height: 30px;
+        .cart-item {
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            line-height: 1;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
         }
-        .quantity-controls input {
-            width: 50px;
+        .cart-item-details {
+            flex-grow: 1;
+        }
+        .item-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .quantity-input {
+            width: 60px;
             text-align: center;
         }
-        .summary-card {
-            background-color: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: .25rem;
-            padding: 20px;
+        /* Estilo para espaciado en pantallas pequeñas cuando las columnas se apilan */
+        @media (max-width: 991.98px) { /* Para pantallas pequeñas y medianas */
+            .order-details-section, .cart-list-section {
+                margin-bottom: 30px; /* Añade espacio entre las secciones apiladas */
+            }
+            .order-details-section {
+                order: 2; /* Cambia el orden para que el formulario vaya debajo en móviles */
+            }
+            .cart-list-section {
+                order: 1; /* Cambia el orden para que el carrito vaya arriba en móviles */
+            }
         }
     </style>
 </head>
@@ -54,13 +66,14 @@
                 <i class="icon-cart bi bi-search" style="color:var(--color-principal); font-size: 18px;"></i>
             </button>
             <ul class="dropdown-menu w-100" id="suggestionsDropdown" aria-labelledby="searchInput">
-                <!-- Las sugerencias se agregarán aquí dinámicamente -->
             </ul>
         </div>
         <div class="cart ">
-            <a href="/cart" class="text-decoration-none"> <i class="bi bi-cart" style="color:#000; font-size: 24px;"></i>
+            <a th:href="@{/carrito}" class="text-decoration-none">
+                <i class="bi bi-cart" style="color:#000; font-size: 24px;"></i>
                 <span id="cart-item-count" class="badge bg-warning text-dark rounded-pill">0</span>
             </a>
+
         </div>
     </div>
     <nav class=" main-nav navbar navbar-expand-lg ">
@@ -84,38 +97,51 @@
     </nav>
 </header>
 
-<div class="container my-5">
+<div class="container mt-5 mb-5">
     <h1 class="mb-4">Tu Carrito de Compras</h1>
 
-    <div id="cart-items-container" class="row">
-    </div>
+    <div class="row">
+        <div class="col-lg-7 order-details-section">
+            <h2>Detalles de la Compra</h2>
+            <form id="checkout-form">
+                <div class="mb-3">
+                    <label for="fullName" class="form-label">Nombre Completo</label>
+                    <input type="text" class="form-control" id="fullName" required>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Correo Electrónico</label>
+                    <input type="email" class="form-control" id="email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Número de Teléfono</label>
+                    <input type="tel" class="form-control" id="phone" required>
+                </div>
+                <div class="mb-3">
+                    <label for="shippingAddress" class="form-label">Dirección de Envío Completa</label>
+                    <textarea class="form-control" id="shippingAddress" rows="3" placeholder="Ej: Calle Principal 123, Urb. Los Álamos, Lima, Perú" required></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="paymentMethod" class="form-label">Método de Pago</label>
+                    <select class="form-select" id="paymentMethod" required>
+                        <option value="">Selecciona un método</option>
+                        <option value="credit_card">Tarjeta de Crédito/Débito</option>
+                        <option value="bank_transfer">Transferencia Bancaria</option>
+                        <option value="yape">Yape/Plin</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-warning btn-lg w-100">Procesar Compra</button>
+            </form>
+        </div>
 
-    <div id="cart-summary" class="row mt-4">
-        <div class="col-md-6 offset-md-6 col-lg-4 offset-lg-8">
-            <div class="summary-card p-3">
-                <h4 class="mb-3">Resumen del Pedido</h4>
-                <div class="d-flex justify-content-between mb-2">
-                    <span>Subtotal:</span>
-                    <span id="cart-subtotal">S/ 0.00</span>
-                </div>
-                <div class="d-flex justify-content-between fw-bold fs-5 border-top pt-3 mt-3">
-                    <span>Total:</span>
-                    <span id="cart-total">S/ 0.00</span>
-                </div>
-                <div class="mt-4">
-                    <button id="proceed-to-checkout-btn" class="btn btn-primary w-100 mb-2">Proceder a la Compra</button>
-                    <button id="clear-cart-btn" class="btn btn-outline-danger w-100">Vaciar Carrito</button>
-                </div>
-                <div class="mt-3 text-center">
-                    <a th:href="@{/}" class="text-decoration-none text-warning">Seguir Comprando</a>
-                </div>
+        <div class="col-lg-5 cart-list-section">
+            <h2>Artículos en tu Carrito</h2>
+            <div id="cart-items-container">
+            </div>
+
+            <div id="cart-summary" class="d-flex justify-content-end align-items-center mt-4 p-3 border-top">
+                <h3>Total: S/ <span id="cart-total">0.00</span></h3>
             </div>
         </div>
-    </div>
-    <div id="empty-cart-message" class="text-center mt-5" style="display: none;">
-        <h3>Tu carrito está vacío.</h3>
-        <p>¡Explora nuestra galería para encontrar tus próximos libros favoritos!</p>
-        <a th:href="@{/}" class="btn btn-warning mt-3">Ir a la Galería</a>
     </div>
 </div>
 
@@ -204,178 +230,77 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const cartItemsContainer = document.getElementById('cart-items-container');
-        const cartSubtotal = document.getElementById('cart-subtotal');
-        const cartTotal = document.getElementById('cart-total');
-        const proceedToCheckoutBtn = document.getElementById('proceed-to-checkout-btn');
-        const clearCartBtn = document.getElementById('clear-cart-btn');
-        const emptyCartMessage = document.getElementById('empty-cart-message');
+        const cartTotalSpan = document.getElementById('cart-total');
+        const checkoutForm = document.getElementById('checkout-form');
 
-        let cart = []; // Volvemos a declarar la variable localmente para esta página, si no está global
-
-        function loadCartLocal() {
-            const storedCart = localStorage.getItem('cart');
-            if (storedCart) {
-                cart = JSON.parse(storedCart);
-            }
-        }
-
-        function saveCartLocal() {
-            localStorage.setItem('cart', JSON.stringify(cart));
-        }
-
-        function updateCartIconGlobal() {
-
-            const globalCartIconCount = document.getElementById('cart-item-count');
-            if (globalCartIconCount) {
-                const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-                globalCartIconCount.textContent = totalItems;
-                globalCartIconCount.style.display = totalItems > 0 ? 'inline-block' : 'none';
-            }
-        }
-        // --- FIN DE FUNCIONES DUPLICADAS ---
-
-
-        function renderCart() {
-            cartItemsContainer.innerHTML = ''; // Limpia el contenedor
-            let subtotal = 0;
+        // Función para mostrar los ítems del carrito
+        function displayCartItems() {
+            // 1. Obtener el carrito usando la función expuesta por cart.js
+            const cart = window.cartFunctions.getCart();
+            cartItemsContainer.innerHTML = ''; // Limpiar el contenedor antes de renderizar
+            let totalAmount = 0;
 
             if (cart.length === 0) {
-                emptyCartMessage.style.display = 'block';
-                document.getElementById('cart-summary').style.display = 'none';
-                return;
+                cartItemsContainer.innerHTML = '<p class="text-muted">Tu carrito está vacío.</p>';
             } else {
-                emptyCartMessage.style.display = 'none';
-                document.getElementById('cart-summary').style.display = 'block';
+                // 2. Recorrer cada ítem en el carrito
+                cart.forEach(item => {
+                    const itemTotal = item.price * item.quantity;
+                    totalAmount += itemTotal;
+
+                    // 3. Crear el elemento HTML para cada ítem
+                    const itemElement = document.createElement('div');
+                    itemElement.classList.add('cart-item');
+                    itemElement.innerHTML = `
+                        <img src="${item.imageUrl}" alt="${item.title}" class="cart-item-image">
+                        <div class="cart-item-details">
+                            <h5>${item.title}</h5>
+                            <p>Precio Unitario: S/ ${item.price.toFixed(2)}</p>
+                            <div class="item-controls">
+                                <label for="quantity-${item.bookId}">Cantidad:</label>
+                                <input type="number" id="quantity-${item.bookId}" class="form-control quantity-input"
+                                       value="${item.quantity}" min="1" data-book-id="${item.bookId}">
+                                <button class="btn btn-danger btn-sm remove-item-btn" data-book-id="${item.bookId}">Eliminar</button>
+                            </div>
+                            <p class="mt-2 mb-0">Subtotal: S/ <span id="subtotal-${item.bookId}">${itemTotal.toFixed(2)}</span></p>
+                        </div>
+                    `;
+                    cartItemsContainer.appendChild(itemElement); // 4. Añadir el elemento al contenedor
+                });
             }
-
-            cart.forEach(item => {
-                const itemTotal = item.price * item.quantity;
-                subtotal += itemTotal;
-
-                const cartItemDiv = document.createElement('div');
-                cartItemDiv.classList.add('d-flex', 'align-items-center', 'mb-3', 'p-3', 'border', 'rounded', 'bg-white');
-                cartItemDiv.innerHTML = `
-                    <img src="${item.imageUrl}" alt="${item.title}" class="cart-item-img">
-                    <div class="flex-grow-1">
-                        <h5>${item.title}</h5>
-                        <p class="mb-1 text-muted">Precio: S/ ${item.price.toFixed(2)}</p>
-                        <p class="mb-1 fw-bold">Subtotal: S/ ${itemTotal.toFixed(2)}</p>
-                    </div>
-                    <div class="d-flex align-items-center quantity-controls">
-                        <button class="btn btn-outline-secondary btn-sm decrement-btn" data-book-id="${item.bookId}">-</button>
-                        <input type="text" class="form-control form-control-sm mx-2 text-center" value="${item.quantity}" readonly>
-                        <button class="btn btn-outline-secondary btn-sm increment-btn" data-book-id="${item.bookId}">+</button>
-                    </div>
-                    <button class="btn btn-danger btn-sm ms-3 remove-item-btn" data-book-id="${item.bookId}">
-                        <i class="bi bi-trash"></i>
-                    </button>
-                `;
-                cartItemsContainer.appendChild(cartItemDiv);
-            });
-
-            cartSubtotal.textContent = `S/ ${subtotal.toFixed(2)}`;
-            cartTotal.textContent = `S/ ${subtotal.toFixed(2)}`; // Por ahora, total es igual a subtotal
-            updateCartIconGlobal(); // Actualiza el icono del navbar al renderizar el carrito
+            cartTotalSpan.textContent = totalAmount.toFixed(2); // Actualizar el total general
         }
 
-        function updateQuantity(bookId, change) {
-            const itemIndex = cart.findIndex(item => item.bookId === bookId);
-            if (itemIndex > -1) {
-                cart[itemIndex].quantity += change;
-                if (cart[itemIndex].quantity <= 0) {
-                    cart.splice(itemIndex, 1); // Eliminar si la cantidad es 0 o menos
-                }
-                saveCartLocal();
-                renderCart(); // Volver a renderizar para actualizar la UI
-            }
-        }
-
-        function removeItem(bookId) {
-            cart = cart.filter(item => item.bookId !== bookId);
-            saveCartLocal();
-            renderCart();
-        }
-
-        function clearCart() {
-            if (confirm('¿Estás seguro de que quieres vaciar el carrito?')) {
-                cart = [];
-                saveCartLocal();
-                renderCart();
-                alert('El carrito ha sido vaciado.');
-            }
-        }
-
-        function simulatePurchase() {
-            if (cart.length === 0) {
-                alert('Tu carrito está vacío. ¡Añade algunos libros antes de comprar!');
-                return;
-            }
-
-
-            console.log('Simulando compra con los siguientes ítems:', cart);
-
-            // Ejemplo de cómo enviarías datos a tu backend (requerirá un endpoint en el backend)
-            /*
-            fetch('/api/checkout', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    // 'X-CSRF-TOKEN': 'tu-token-csrf-aqui' // Si usas CSRF
-                },
-                body: JSON.stringify(cart) // Envía el array de ítems del carrito
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Error al procesar la compra. Código: ' + response.status);
-                }
-                return response.json(); // Si el backend devuelve alguna confirmación
-            })
-            .then(data => {
-                alert('¡Compra simulada con éxito! Tu número de pedido es: ' + (data.orderId || 'N/A'));
-                cart = []; // Vaciar el carrito después de una compra exitosa
-                saveCartLocal();
-                renderCart(); // Actualizar la UI
-                // Redirigir a una página de confirmación
-                // window.location.href = '/order-confirmation?orderId=' + data.orderId;
-            })
-            .catch(error => {
-                console.error('Error durante la simulación de compra:', error);
-                alert('Hubo un error al procesar tu compra. Inténtalo de nuevo.');
-            });
-            */
-
-            // Simulación exitosa sin backend:
-            alert('¡Compra simulada con éxito! Revisa la consola para ver los ítems.');
-            cart = []; // Vaciar el carrito después de una compra simulada exitosa
-            saveCartLocal();
-            renderCart(); // Actualizar la UI para mostrar el carrito vacío
-            // Opcional: Redirigir al inicio o a una página de confirmación
-            // window.location.href = '/order-confirmation-simulated';
-        }
-
-        // --- Event Listeners para la página del carrito ---
-        cartItemsContainer.addEventListener('click', function(event) {
-            const target = event.target;
-            const bookId = parseInt(target.dataset.bookId);
-
-            if (!isNaN(bookId)) {
-                if (target.classList.contains('increment-btn')) {
-                    updateQuantity(bookId, 1);
-                } else if (target.classList.contains('decrement-btn')) {
-                    updateQuantity(bookId, -1);
-                } else if (target.classList.contains('remove-item-btn') || target.closest('.remove-item-btn')) {
-                    // Si el clic fue en el botón o en el icono dentro del botón
-                    removeItem(bookId);
+        // --- Event Listeners para la página del carrito (manejo de cantidades y eliminación) ---
+        cartItemsContainer.addEventListener('change', function(event) {
+            if (event.target.classList.contains('quantity-input')) {
+                const bookId = parseInt(event.target.dataset.bookId);
+                const newQuantity = parseInt(event.target.value);
+                if (!isNaN(bookId) && !isNaN(newQuantity)) {
+                    window.cartFunctions.updateItemQuantity(bookId, newQuantity);
+                    displayCartItems(); // Vuelve a renderizar para actualizar subtotales y totales
                 }
             }
         });
 
-        clearCartBtn.addEventListener('click', clearCart);
-        proceedToCheckoutBtn.addEventListener('click', simulatePurchase);
+        cartItemsContainer.addEventListener('click', function(event) {
+            if (event.target.classList.contains('remove-item-btn')) {
+                const bookId = parseInt(event.target.dataset.bookId);
+                if (!isNaN(bookId)) {
+                    window.cartFunctions.removeFromCart(bookId);
+                    displayCartItems(); // Vuelve a renderizar
+                }
+            }
+        });
 
-        // --- Inicialización ---
-        loadCartLocal(); // Carga el carrito al iniciar la página
-        renderCart();    // Dibuja los ítems del carrito
+        // Event listener para el envío del formulario de compra (tu lógica de fetch al backend)
+        checkoutForm.addEventListener('submit', async function(event) {
+            event.preventDefault();
+           
+        });
+
+        // IMPORTANTE: Llamar a la función displayCartItems() al cargar la página
+        displayCartItems();
     });
 </script>
 </body>
