@@ -54,10 +54,12 @@ public class OrderServiceImpl implements OrderService {
                                     if (book.getStock() < itemRequest.getQuantity()) {
                                         throw new IllegalArgumentException("No hay suficientes libros en stock");
                                     }
+                                    book.setStock(book.getStock() - itemRequest.getQuantity());
+                                    bookRepository.save(book);
                                     BigDecimal unitPrice = book.getPrice();
                                     BigDecimal subTotal = unitPrice.multiply(BigDecimal.valueOf(itemRequest.getQuantity()));
-
                                     OrderItem orderItem = new OrderItem();
+
                                     orderItem.setBook(book);
                                     orderItem.setUnitePrice(unitPrice);
                                     orderItem.setQuantity(itemRequest.getQuantity());
