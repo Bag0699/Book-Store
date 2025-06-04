@@ -5,12 +5,9 @@ import com.bag.Book_Store.mapper.BookMapper;
 import com.bag.Book_Store.model.dto.BookRequest;
 import com.bag.Book_Store.model.dto.response.BookResponse;
 import com.bag.Book_Store.model.dto.response.BookSearchResponse;
-import com.bag.Book_Store.model.entity.Author;
-import com.bag.Book_Store.model.entity.Book;
-import com.bag.Book_Store.model.entity.Category;
-import com.bag.Book_Store.repository.AuthorRepository;
-import com.bag.Book_Store.repository.BookRepository;
-import com.bag.Book_Store.repository.CategoryRepository;
+import com.bag.Book_Store.model.dto.response.FormatResponse;
+import com.bag.Book_Store.model.entity.*;
+import com.bag.Book_Store.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +21,8 @@ public class BookServiceImpl implements BookService{
 
     private final AuthorRepository authorRepository;
     private final CategoryRepository categoryRepository;
+    private final EditorialRepository editorialRepository;
+    private final FormatRepository formatRepository;
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
 
@@ -89,8 +88,12 @@ public class BookServiceImpl implements BookService{
                 .orElse(null);
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElse(null);
+        Editorial editorial = editorialRepository.findById(request.getEditorialId())
+                .orElse(null);
+        Format format = formatRepository.findById(request.getFormatId())
+                .orElse(null);
 
-        if(author != null && category != null ) {
+        if(author != null && category != null && editorial != null && format != null ) {
             Book book = new Book();
             book.setTitle(request.getTitle());
             book.setAuthor(author);
@@ -100,9 +103,13 @@ public class BookServiceImpl implements BookService{
             book.setDescription(request.getDescription());
             book.setUrlImg(request.getUrlImg());
             book.setCategory(category);
+            book.setStock(request.getStock());
+            book.setDimension(request.getDimension());
+            book.setFormat(format);
+            book.setEditorial(editorial);
             return bookMapper.toBookResponse(bookRepository.save(book));
         } else {
-            throw new IllegalArgumentException("El autor o la categoria no existe");
+            throw new IllegalArgumentException("El autor o la categoria o formato o editorial no existe");
         }
     }
 }

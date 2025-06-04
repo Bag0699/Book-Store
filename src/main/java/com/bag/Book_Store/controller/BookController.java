@@ -1,16 +1,12 @@
 package com.bag.Book_Store.controller;
 
 import com.bag.Book_Store.model.dto.BookRequest;
-import com.bag.Book_Store.model.dto.response.AuthorResponse;
-import com.bag.Book_Store.model.dto.response.BookResponse;
-import com.bag.Book_Store.model.dto.response.BookSearchResponse;
-import com.bag.Book_Store.model.dto.response.CategoryResponse;
+import com.bag.Book_Store.model.dto.response.*;
 import com.bag.Book_Store.model.entity.Author;
 import com.bag.Book_Store.model.entity.Book;
 import com.bag.Book_Store.model.entity.Category;
-import com.bag.Book_Store.service.AuthorService;
-import com.bag.Book_Store.service.BookService;
-import com.bag.Book_Store.service.CategoryService;
+import com.bag.Book_Store.service.*;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +23,8 @@ public class BookController {
     private final CategoryService categoryService;
     private final BookService bookService;
     private final AuthorService authorService;
+    private final FormatService formatService;
+    private final EditorialService editorialService;
 
     @GetMapping("/")
     public String mostrarIndex(Model model) {
@@ -40,6 +38,10 @@ public class BookController {
         List<BookResponse> books = bookService.findAll();
         List<CategoryResponse> categories = categoryService.findAll();
         List<AuthorResponse> authors = authorService.findAll();
+        List<FormatResponse> formats = formatService.findAll();
+        List<EditorialResponse> editorials = editorialService.findAll();
+        model.addAttribute("formats",formats);
+        model.addAttribute("editorials",editorials);
         model.addAttribute("books",books);
         model.addAttribute("categories",categories);
         model.addAttribute("authors",authors);
@@ -89,8 +91,8 @@ public class BookController {
         return ResponseEntity.ok(books);
     }
 
-    @PostMapping("/listado")
-    public ResponseEntity<BookResponse> guardarLibro(@RequestBody BookRequest request) {
+    @PostMapping("/api/books")
+    public ResponseEntity<BookResponse> guardarLibro(@Valid @RequestBody BookRequest request) {
         BookResponse book = bookService.save(request);
         return ResponseEntity.ok(book);
     }
