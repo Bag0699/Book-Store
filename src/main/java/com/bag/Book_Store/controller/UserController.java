@@ -1,6 +1,6 @@
 package com.bag.Book_Store.controller;
 
-import com.bag.Book_Store.service.CategoryService;
+import com.bag.Book_Store.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/admin/categories")
-public class CategoryController {
+@RequestMapping("/admin/users")
+public class UserController {
 
-    private final CategoryService categoryService;
+    private final UserService userService;
 
     @GetMapping
-    public String findAll(Model model) {
-        model.addAttribute("categories", categoryService.findAll());
-        return "admin/categories/list";
+    public String findAll(Model model){
+        model.addAttribute("users", userService.findAll());
+        return "admin/users/list";
     }
 }

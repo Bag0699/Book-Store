@@ -1,6 +1,6 @@
 package com.bag.Book_Store.controller;
 
-import com.bag.Book_Store.service.CategoryService;
+import com.bag.Book_Store.service.EditorialService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,14 +9,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/admin/categories")
-public class CategoryController {
+@RequestMapping("/admin/editorials")
+public class EditorialController {
 
-    private final CategoryService categoryService;
+    private final EditorialService editorialService;
 
     @GetMapping
     public String findAll(Model model) {
-        model.addAttribute("categories", categoryService.findAll());
-        return "admin/categories/list";
+        model.addAttribute("editorials", editorialService.findAll());
+        return "admin/editorials/list";
     }
+
 }

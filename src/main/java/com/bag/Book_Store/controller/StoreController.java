@@ -14,9 +14,6 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class StoreController {
-//    private final List<Store> storeList = List.of(new Store("Sede Surco", "Av. Caminos del Inca 2570, Santiago de Surco, Lima", "Lunes a sábado: 8:00 a. m. – 8:00 p. m.", "https://maps.google.com/maps?q=Av.+Caminos+del+Inca+2570,+Surco,+Lima&output=embed"),
-//            new Store("Sede San Miguel", "Av. La Marina 2155, San Miguel, Lima", "Lunes a sábado: 8:00 a. m. – 8:00 p. m.", "https://maps.google.com/maps?q=Av.+La+Marina+2155,+San+Miguel,+Lima&output=embed"),
-//            new Store("Sede Miraflores", "Av. José Pardo 610, Miraflores, Lima", "Lunes a viernes: 8:00 a. m. – 8:00 p. m. | Sábados: 9:00 a. m. – 8:00 p. m.", "https://maps.google.com/maps?q=Av.+José+Pardo+610,+Miraflores,+Lima&output=embed"));
 
     private final StoreService storeService;
 
@@ -33,4 +30,9 @@ public class StoreController {
         return "contactanos";
     }
 
+    @GetMapping({"/admin/stores"})
+    public String findAll(Model model) {
+        model.addAttribute("stores", storeService.findAll());
+        return "admin/stores/list";
+    }
 }

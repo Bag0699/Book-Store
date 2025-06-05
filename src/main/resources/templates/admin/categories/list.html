@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/admin-layout}">
+<head>
+    <title>Administración de Categorías</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h1 class="mt-4">Gestión de Categorías</h1>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <p class="lead">Aquí puedes ver y gestionar todas las categorías de libros.</p>
+        <a th:href="@{/admin/categories/new}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Nueva Categoría
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">Lista de Categorías</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead class="bg-light text-dark">
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="category : ${categories}">
+                        <td th:text="${category.id}">1</td>
+                        <td th:text="${category.name}">Novela</td>
+                        <td>
+                            <a th:href="@{/admin/categories/edit/{id}(id=${category.id})}"
+                               class="btn btn-sm btn-primary me-2">
+                                <i class="bi bi-pencil-square"></i> Editar
+                            </a>
+                            <form th:action="@{/admin/categories/delete/{id}(id=${category.id})}" method="post"
+                                  style="display:inline;"
+                                  onsubmit="return confirm('¿Estás seguro de que quieres eliminar esta categoría?');">
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    <i class="bi bi-trash"></i> Eliminar
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr th:if="${categories.isEmpty()}">
+                        <td colspan="3" class="text-center text-muted">No hay categorías registradas.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="page-js"></th:block>
+</body>
+</html>

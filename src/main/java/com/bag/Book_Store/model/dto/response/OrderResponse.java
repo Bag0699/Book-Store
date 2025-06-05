@@ -11,6 +11,7 @@ import java.time.LocalDate;
 public class OrderResponse {
     private Long id;
     //User pero en duda.
+    private UserResponse user;
     private String orderDate;
     private String totalAmount;
     private String shippingAddress;

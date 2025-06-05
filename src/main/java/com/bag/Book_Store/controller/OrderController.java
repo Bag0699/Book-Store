@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,4 +32,11 @@ public class OrderController {
     public List<OrderResponse> findAll() {
         return orderService.findAll();
     }
+
+    @GetMapping("/list")
+    public String listOrders(Model model) {
+        model.addAttribute("orders", orderService.findAll());
+        return "admin/orders/list";
+    }
+
 }
