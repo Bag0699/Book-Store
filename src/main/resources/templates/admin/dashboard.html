@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/admin-layout}">
+<head>
+    <title>Dashboard</title>
+<!--    <meta layout:decorate="~{admin/admin-layout}" th:remove="tag">-->
+</head>
+<body>
+<div layout:fragment="content">
+    <h1 class="mt-4">Bienvenido al Panel de Administración</h1>
+    <p class="lead">Desde aquí puedes gestionar todos los aspectos de tu librería.</p>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card text-center mb-3">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-book fs-3"></i></h5>
+                    <p class="card-text">Gestionar <strong>Libros</strong></p>
+                    <a th:href="@{/admin/books}" class="btn btn-primary">Ir a Libros</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center mb-3">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-people fs-3"></i></h5>
+                    <p class="card-text">Gestionar <strong>Usuarios</strong></p>
+                    <a th:href="@{/admin/users}" class="btn btn-primary">Ir a Usuarios</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center mb-3">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-receipt fs-3"></i></h5>
+                    <p class="card-text">Gestionar <strong>Órdenes</strong></p>
+                    <a th:href="@{/admin/orders}" class="btn btn-primary">Ir a Órdenes</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center mb-3">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-pencil-square"></i></h5>
+                    <p class="card-text">Gestionar <strong>Autores</strong></p>
+                    <a th:href="@{/admin/authors}" class="btn btn-primary">Ir a Órdenes</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center mb-3">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-file-earmark"></i></h5>
+                    <p class="card-text">Gestionar <strong>Formatos</strong></p>
+                    <a th:href="@{/admin/formats}" class="btn btn-primary">Ir a Órdenes</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center mb-3">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-shop"></i></h5>
+                    <p class="card-text">Gestionar <strong>Tiendas</strong></p>
+                    <a th:href="@{/admin/stores}" class="btn btn-primary">Ir a Órdenes</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center mb-3">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-building"></i></h5>
+                    <p class="card-text">Gestionar <strong>Editoriales</strong></p>
+                    <a th:href="@{/admin/editorials}" class="btn btn-primary">Ir a Órdenes</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
