@@ -33,6 +33,11 @@ public class BookController {
         return "index";
     }
 
+    @GetMapping("/admin/books")
+    public String findAll(Model model) {
+        model.addAttribute("books", bookService.findAll());
+        return "admin/books/list";
+    }
     @GetMapping("/listado")
     public String listado(Model model) {
         List<BookResponse> books = bookService.findAll();
