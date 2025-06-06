@@ -38,6 +38,16 @@ public class BookController {
         model.addAttribute("books", bookService.findAll());
         return "admin/books/list";
     }
+
+    @GetMapping("/admin/books/new")
+    public String showAddBookForm(Model model) {
+        model.addAttribute("allCategories", categoryService.findAll());
+        model.addAttribute("allAuthors", authorService.findAll());
+        model.addAttribute("allFormats", formatService.findAll());
+        model.addAttribute("allEditorials", editorialService.findAll());
+        model.addAttribute("bookNew", new BookRequest());
+        return "admin/books/form";
+    }
     @GetMapping("/listado")
     public String listado(Model model) {
         List<BookResponse> books = bookService.findAll();
@@ -100,5 +110,11 @@ public class BookController {
     public ResponseEntity<BookResponse> guardarLibro(@Valid @RequestBody BookRequest request) {
         BookResponse book = bookService.save(request);
         return ResponseEntity.ok(book);
+    }
+
+    @PostMapping("/admin/books/save")
+    private String addBook(@Valid @ModelAttribute("bookRequest") BookRequest book) {
+        bookService.save(book);
+        return "redirect:/admin/books";
     }
 }

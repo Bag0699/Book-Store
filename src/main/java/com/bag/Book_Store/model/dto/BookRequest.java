@@ -3,15 +3,18 @@ package com.bag.Book_Store.model.dto;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 import java.math.BigDecimal;
 
 @Builder
 @Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class BookRequest {
 
+    private Long id;
     @NotEmpty(message = "Title is required")
     private String title;
 
