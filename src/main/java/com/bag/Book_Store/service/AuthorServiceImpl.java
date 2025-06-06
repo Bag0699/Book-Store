@@ -2,6 +2,7 @@ package com.bag.Book_Store.service;
 
 import com.bag.Book_Store.exception.AuthorNotFoundException;
 import com.bag.Book_Store.mapper.AuthorMapper;
+import com.bag.Book_Store.model.dto.request.CreateAuthorRequest;
 import com.bag.Book_Store.model.dto.response.AuthorResponse;
 import com.bag.Book_Store.model.entity.Author;
 import com.bag.Book_Store.repository.AuthorRepository;
@@ -24,9 +25,6 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public Map<String, Long> getBookCountByAuthor() {
-//        return inMemoryData.books.stream()
-//                .collect(Collectors.groupingBy(book ->
-//                        book.getAuthor().getName(), Collectors.counting()));
         return bookRepository.findAll().stream()
                 .collect(Collectors.groupingBy( book ->
                         book.getAuthor().getName(), Collectors.counting()));
@@ -49,5 +47,11 @@ public class AuthorServiceImpl implements AuthorService {
         return authorRepository.findById(id)
                 .map(authorMapper::toAuthorResponse)
                 .orElseThrow(AuthorNotFoundException::new);
+    }
+
+    @Override
+    public AuthorResponse save(CreateAuthorRequest request) {
+        Author author = authorMapper.toAuthor(request);
+        return authorMapper.toAuthorResponse(authorRepository.save(author));
     }
 }
