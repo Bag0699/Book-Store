@@ -65,7 +65,7 @@
                             <span th:if="${book.format != null}" th:text="${book.format.name}">Tapa Dura</span>
                             <span th:unless="${book.format != null}">N/A</span>
                         </td>
-                        <td th:text="${#numbers.formatCurrency(book.price)}">$25.00</td>
+                        <td th:text="${'S/'+book.price}">$25.00</td>
                         <td th:text="${book.stock}">150</td>
                         <td>
                             <a th:href="@{/admin/books/edit/{id}(id=${book.id})}"

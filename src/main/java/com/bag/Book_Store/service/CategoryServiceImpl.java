@@ -2,7 +2,9 @@ package com.bag.Book_Store.service;
 
 import com.bag.Book_Store.exception.CategoryNotFoundException;
 import com.bag.Book_Store.mapper.CategoryMapper;
+import com.bag.Book_Store.model.dto.request.CreateCategoryRequest;
 import com.bag.Book_Store.model.dto.response.CategoryResponse;
+import com.bag.Book_Store.model.entity.Category;
 import com.bag.Book_Store.repository.BookRepository;
 import com.bag.Book_Store.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,12 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
     private final BookRepository bookRepository;
+
+    @Override
+    public CategoryResponse save(CreateCategoryRequest request) {
+        Category category = categoryMapper.toCategory(request);
+        return categoryMapper.toCategoryResponse(categoryRepository.save(category));
+    }
 
     public CategoryResponse findById(Long id){
         return  categoryRepository.findById(id)

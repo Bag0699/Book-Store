@@ -1,10 +1,14 @@
 package com.bag.Book_Store.controller;
 
+import com.bag.Book_Store.model.dto.request.CreateEditorialRequest;
+import com.bag.Book_Store.model.entity.Editorial;
 import com.bag.Book_Store.service.EditorialService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -20,4 +24,15 @@ public class EditorialController {
         return "admin/editorials/list";
     }
 
+    @GetMapping("/new")
+    public String showAddEditorialForm(Model model) {
+        model.addAttribute("editorial", new Editorial());
+        return "admin/editorials/form";
+    }
+
+    @PostMapping("/save")
+    public String addEditorial(@ModelAttribute("editorial") CreateEditorialRequest editorial) {
+        editorialService.save(editorial);
+        return "redirect:/admin/editorials";
+    }
 }
