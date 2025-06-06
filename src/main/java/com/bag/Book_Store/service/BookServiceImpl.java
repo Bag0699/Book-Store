@@ -10,14 +10,12 @@ import com.bag.Book_Store.model.entity.*;
 import com.bag.Book_Store.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class BookServiceImpl implements BookService{
 
 
@@ -96,22 +94,17 @@ public class BookServiceImpl implements BookService{
                 .orElse(null);
 
         if(author != null && category != null && editorial != null && format != null ) {
-//            Book book = new Book();
-//            book.setTitle(request.getTitle());
-//            book.setAuthor(author);
-//            book.setSinopsis(request.getSinopsis());
-//            book.setPrice(request.getPrice());
-//            book.setIsbn(request.getIsbn());
-//            book.setDescription(request.getDescription());
-//            book.setUrlImg(request.getUrlImg());
-//            book.setCategory(category);
-//            book.setStock(request.getStock());
-//            book.setDimension(request.getDimension());
-//            book.setFormat(format);
-//            book.setEditorial(editorial);
-            Book book = bookMapper.toBook(request);
+            Book book = new Book();
+            book.setTitle(request.getTitle());
             book.setAuthor(author);
+            book.setSinopsis(request.getSinopsis());
+            book.setPrice(request.getPrice());
+            book.setIsbn(request.getIsbn());
+            book.setDescription(request.getDescription());
+            book.setUrlImg(request.getUrlImg());
             book.setCategory(category);
+            book.setStock(request.getStock());
+            book.setDimension(request.getDimension());
             book.setFormat(format);
             book.setEditorial(editorial);
             return bookMapper.toBookResponse(bookRepository.save(book));
