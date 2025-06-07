@@ -12,4 +12,5 @@ public interface CategoryService {
     CategoryResponse findById(Long id);
     List<CategoryResponse> findAll();
     Map<String, Long> getBookCountByCategory();
+    void deleteById(Long id);
 }

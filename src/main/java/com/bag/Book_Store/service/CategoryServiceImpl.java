@@ -53,4 +53,12 @@ public class CategoryServiceImpl implements CategoryService {
                 .collect(Collectors.groupingBy(book ->
                         book.getCategory().getName(), Collectors.counting()));
     }
+
+    @Override
+    public void deleteById(Long id) {
+        if(!categoryRepository.existsById(id)) {
+            throw new CategoryNotFoundException();
+        }
+        categoryRepository.deleteById(id);
+    }
 }

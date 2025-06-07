@@ -6,10 +6,7 @@ import com.bag.Book_Store.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -33,6 +30,12 @@ public class CategoryController {
     @PostMapping("/save")
     public String addCategory(@ModelAttribute("category")CreateCategoryRequest category) {
         categoryService.save(category);
+        return "redirect:/admin/categories";
+    }
+
+    @PostMapping("/delete/{id}")
+    public String deleteCategory(@PathVariable Long id) {
+        categoryService.deleteById(id);
         return "redirect:/admin/categories";
     }
 }
