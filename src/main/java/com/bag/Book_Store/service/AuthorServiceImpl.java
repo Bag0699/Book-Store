@@ -40,10 +40,6 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public AuthorResponse findById(Long id) {
-//        return inMemoryData.authors.stream()
-//                .filter( author -> id.equals(author.getId()))
-//                .findFirst()
-//                .orElse(null);
         return authorRepository.findById(id)
                 .map(authorMapper::toAuthorResponse)
                 .orElseThrow(AuthorNotFoundException::new);
@@ -53,5 +49,13 @@ public class AuthorServiceImpl implements AuthorService {
     public AuthorResponse save(CreateAuthorRequest request) {
         Author author = authorMapper.toAuthor(request);
         return authorMapper.toAuthorResponse(authorRepository.save(author));
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        if(!authorRepository.existsById(id)) {
+            throw new AuthorNotFoundException();
+        }
+        authorRepository.deleteById(id);
     }
 }

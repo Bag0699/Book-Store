@@ -6,10 +6,7 @@ import com.bag.Book_Store.service.AuthorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -34,6 +31,12 @@ public class AuthorController {
     @PostMapping("/save")
     public String addAuthor(@ModelAttribute("author") CreateAuthorRequest author) {
         authorService.save(author);
+        return "redirect:/admin/authors";
+    }
+
+    @PostMapping("/delete/{id}")
+    public String deleteAuthor(@PathVariable Long id) {
+        authorService.deleteById(id);
         return "redirect:/admin/authors";
     }
 }

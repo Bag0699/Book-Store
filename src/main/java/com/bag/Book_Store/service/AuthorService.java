@@ -13,4 +13,5 @@ public interface AuthorService {
     List<AuthorResponse> findAll();
     AuthorResponse findById(Long id);
     AuthorResponse save(CreateAuthorRequest request);
+    void deleteById(Long id);
 }
