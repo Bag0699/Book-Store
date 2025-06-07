@@ -6,9 +6,11 @@ import com.bag.Book_Store.model.dto.request.CreateUserRequest;
 import com.bag.Book_Store.model.dto.response.UserResponse;
 import com.bag.Book_Store.model.entity.User;
 import com.bag.Book_Store.repository.UserRepository;
+import com.bag.Book_Store.util.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -21,6 +23,8 @@ public class UserServiceImpl implements UserService{
     @Override
     public UserResponse save(CreateUserRequest request) {
         User user = userMapper.toUser(request);
+        user.setRegisterDate(LocalDate.now());
+        user.setRole(Role.ADMIN);
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
