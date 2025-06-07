@@ -7,10 +7,7 @@ import com.bag.Book_Store.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -48,6 +45,12 @@ public class StoreController {
     @PostMapping("/admin/stores/save")
     public String addStore(@ModelAttribute("store")CreateStoreRequest store) {
         storeService.save(store);
+        return "redirect:/admin/stores";
+    }
+
+    @PostMapping("/admin/stores/delete/{id}")
+    public String deleteStore(@PathVariable Long id) {
+        storeService.deleteById(id);
         return "redirect:/admin/stores";
     }
 }

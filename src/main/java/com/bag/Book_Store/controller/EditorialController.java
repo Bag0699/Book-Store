@@ -6,10 +6,7 @@ import com.bag.Book_Store.service.EditorialService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -33,6 +30,12 @@ public class EditorialController {
     @PostMapping("/save")
     public String addEditorial(@ModelAttribute("editorial") CreateEditorialRequest editorial) {
         editorialService.save(editorial);
+        return "redirect:/admin/editorials";
+    }
+
+    @PostMapping("/delete/{id}")
+    public String deleteEditorial(@PathVariable Long id) {
+        editorialService.deleteById(id);
         return "redirect:/admin/editorials";
     }
 }
