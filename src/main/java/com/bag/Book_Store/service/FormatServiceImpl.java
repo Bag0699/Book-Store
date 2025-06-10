@@ -2,7 +2,7 @@ package com.bag.Book_Store.service;
 
 import com.bag.Book_Store.exception.FormatNotFoundException;
 import com.bag.Book_Store.mapper.FormatMapper;
-import com.bag.Book_Store.model.dto.request.CreateFormarRequest;
+import com.bag.Book_Store.model.dto.request.CreateFormatRequest;
 import com.bag.Book_Store.model.dto.response.FormatResponse;
 import com.bag.Book_Store.model.entity.Format;
 import com.bag.Book_Store.repository.FormatRepository;
@@ -19,7 +19,7 @@ public class FormatServiceImpl implements FormatService {
     private final FormatRepository formatRepository;
 
     @Override
-    public FormatResponse save(CreateFormarRequest request) {
+    public FormatResponse save(CreateFormatRequest request) {
         Format format = formatMapper.toFormat(request);
         return formatMapper.toFormatResponse(formatRepository.save(format));
     }
@@ -40,7 +40,7 @@ public class FormatServiceImpl implements FormatService {
     }
 
     @Override
-    public FormatResponse update(Long id, CreateFormarRequest request) {
+    public FormatResponse update(Long id, CreateFormatRequest request) {
         return formatRepository.findById(id)
                 .map(format -> {
                     format.setName(request.getName());

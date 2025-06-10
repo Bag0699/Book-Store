@@ -10,8 +10,8 @@ import java.math.BigDecimal;
 public class OrderItemResponse {
 
     private Long id;
-    //User
-    //libro
+//    private OrderResponse order;
+    private BookResponse book;
     private Integer quantity;
     private BigDecimal unitePrice;
     private BigDecimal subTotal;

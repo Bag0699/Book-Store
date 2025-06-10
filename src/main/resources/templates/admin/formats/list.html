@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/admin-layout}">
+<head>
+  <title>Administración de Formatos</title>
+</head>
+<body>
+<div layout:fragment="content">
+  <h1 class="mt-4">Gestión de Formatos</h1>
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <p class="lead">Aquí puedes ver y gestionar todos los formatos de libros disponibles.</p>
+    <a th:href="@{/admin/formats/new}" class="btn btn-primary">
+      <i class="bi bi-plus-circle"></i> Nuevo Formato
+    </a>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-header bg-dark text-white">
+      <h5 class="mb-0">Lista de Formatos</h5>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-hover table-striped">
+          <thead class="bg-light text-dark">
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Acciones</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="format : ${formats}">
+            <td th:text="${format.id}">1</td>
+            <td th:text="${format.name}">Tapa Dura</td>
+            <td>
+              <a th:href="@{/admin/formats/edit/{id}(id=${format.id})}"
+                 class="btn btn-sm btn-primary me-2">
+                <i class="bi bi-pencil-square"></i> Editar
+              </a>
+              <form th:action="@{/admin/formats/delete/{id}(id=${format.id})}" method="post"
+                    style="display:inline;"
+                    onsubmit="return confirm('¿Estás seguro de que quieres eliminar este formato?');">
+                <button type="submit" class="btn btn-sm btn-danger">
+                  <i class="bi bi-trash"></i> Eliminar
+                </button>
+              </form>
+            </td>
+          </tr>
+          <tr th:if="${formats.empty}">
+            <td colspan="3" class="text-center text-muted">No hay formatos registrados.</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<th:block layout:fragment="page-js"></th:block>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/admin-layout}">
+<head>
+    <title>Administración de Órdenes</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h1 class="mt-4">Gestión de Órdenes</h1>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <p class="lead">Aquí puedes ver y gestionar las órdenes de compra.</p>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">Lista de Órdenes</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead class="bg-light text-dark">
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Usuario</th>
+                        <th scope="col">Fecha Orden</th>
+                        <th scope="col">Total</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="order : ${orders}">
+                        <td th:text="${order.id}">101</td>
+                        <td>
+                            <span th:if="${order.user!= null}" th:text="${order.user.username}">usuario_compra</span>
+                            <span th:unless="${order.user != null}">N/A</span>
+                        </td>
+                        <td th:text="${order.orderDate}">01/01/2025</td>
+                        <td th:text="${'S/ '+ order.totalAmount}">$123.45</td>
+                        <td th:text="${order.status}">Pendiente</td>
+                        <td>
+                            <a th:href="@{/api/orders/details/{id}(id=${order.id})}"
+                               class="btn btn-sm btn-info me-2">
+                                <i class="bi bi-eye"></i> Ver Detalles
+                            </a>
+                            <form th:action="@{/api/orders/delete/{id}(id=${order.id})}" method="post"
+                                  style="display:inline;"
+                                  onsubmit="return confirm('¿Estás seguro de que quieres eliminar esta orden? Esto puede afectar los datos de venta.');">
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    <i class="bi bi-trash"></i> Eliminar
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr th:if="${orders.isEmpty()}">
+                        <td colspan="6" class="text-center text-muted">No hay órdenes registradas.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="page-js"></th:block>
+</body>
+</html>

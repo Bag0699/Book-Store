@@ -15,4 +15,9 @@ public interface BookMapper {
     @Mapping(source = "urlImg", target = "urlImg")
     BookResponse toBookResponse(Book book);
     Book toBook(BookRequest request);
+    @Mapping(source = "author.id", target = "authorId")
+    @Mapping(source = "category.id", target = "categoryId")
+    @Mapping(source = "format.id", target = "formatId")
+    @Mapping(source = "editorial.id", target = "editorialId")
+    BookRequest toBookRequest(BookResponse book);
 }

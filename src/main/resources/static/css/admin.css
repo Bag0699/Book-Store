@@ -1,0 +1,283 @@
+@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Outfit:wght@100..900&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+
+:root {
+    --color-principal: #c4471a;
+    --color-secundario: #fae5b6;
+    --color-verde: #0b442a;
+    --color-rojo: #c00028;
+    --color-negro: #1d1d1c;
+    --color-plomo: #e7e6df;
+
+    /* Opcional: Sobrescribir las variables de color de Bootstrap directamente si quieres que afecte a todos los componentes que las usen */
+    --bs-primary: var(--color-principal);
+    --bs-secondary: var(--color-secundario);
+    --bs-success: var(--color-verde);
+    --bs-danger: var(--color-rojo);
+    --bs-dark: var(--color-negro);
+    --bs-light: var(--color-plomo);
+
+    /* Definir las versiones RGB de tus colores para las sombras de foco de Bootstrap si es necesario */
+    --bs-primary-rgb: 196, 71, 26; /* RGB de #c4471a */
+    --bs-secondary-rgb: 250, 229, 182; /* RGB de #fae5b6 */
+    --bs-success-rgb: 11, 68, 42; /* RGB de #0b442a */
+    --bs-danger-rgb: 192, 0, 40; /* RGB de #c00028 */
+    --bs-dark-rgb: 29, 29, 28; /* RGB de #1d1d1c */
+    --bs-light-rgb: 231, 230, 223; /* RGB de #e7e6df */
+}
+
+body {
+    overflow-x: hidden;
+}
+
+* {
+    font-family: 'Outfit', sans-serif;
+}
+
+/* Navbar */
+.navbar {
+    background-color: var(--color-negro) !important; /* Usar tu color negro para la navbar */
+}
+.navbar-dark .navbar-brand {
+    color: var(--color-secundario); /* Color del texto del brand */
+}
+.navbar-dark .navbar-nav .nav-link {
+    color: var(--color-plomo); /* Color de los enlaces */
+}
+.navbar-dark .navbar-nav .nav-link:hover,
+.navbar-dark .navbar-nav .nav-link:focus {
+    color: var(--color-secundario); /* Color al pasar el ratón */
+}
+.dropdown-menu {
+    background-color: var(--color-negro);
+}
+.dropdown-item {
+    color: var(--color-plomo);
+}
+.dropdown-item:hover {
+    background-color: var(--color-principal);
+    color: white;
+}
+
+
+/* Sidebar */
+#sidebar-wrapper {
+    min-height: 100vh;
+    margin-left: -15rem;
+    transition: margin .25s ease-out;
+    width: 15rem;
+    z-index: 1000;
+}
+
+#sidebar-wrapper .sidebar-heading {
+    background-color: var(--color-principal) !important; /* Usar tu color principal para el encabezado de la sidebar */
+    color: white !important; /* Texto en blanco para contraste */
+    padding: 0.875rem 1.25rem;
+    font-size: 1.2rem;
+}
+
+#sidebar-wrapper .list-group {
+    width: 15rem;
+}
+
+/* Estilos de los elementos de la lista lateral */
+.list-group-item {
+    color: var(--color-negro); /* Texto de los elementos de la lista */
+}
+.list-group-item-action:hover {
+    background-color: var(--color-secundario); /* Fondo al pasar el ratón */
+    color: var(--color-negro); /* Texto en negro para contraste */
+}
+.list-group-item.active {
+    background-color: var(--color-principal) !important; /* Tu color principal para el elemento activo */
+    border-color: var(--color-principal) !important;
+    color: white !important; /* Texto en blanco para el elemento activo */
+}
+
+
+/* Contenido Principal */
+#page-content-wrapper {
+    min-width: 100vw;
+    flex-grow: 1;
+    background-color: var(--color-plomo); /* Fondo suave para el área de contenido */
+}
+
+/* Ajustes Responsivos */
+@media (min-width: 768px) {
+    #sidebar-wrapper {
+        margin-left: 0;
+    }
+    #page-content-wrapper {
+        min-width: 0;
+        width: 100%;
+    }
+    body.sb-sidenav-toggled #wrapper #sidebar-wrapper {
+        margin-left: -15rem;
+    }
+}
+
+/* --- ESTILOS PARA LOS BOTONES --- */
+
+/* Botón principal (ej. .btn-primary) */
+.btn-primary {
+    background-color: var(--color-principal);
+    border-color: var(--color-principal);
+    color: white;
+}
+.btn-primary:hover {
+    background-color: var(--color-secundario); /* Fondo Secundario en hover */
+    border-color: var(--color-secundario); /* Borde Secundario en hover */
+    color: var(--color-negro); /* Texto Negro en hover */
+}
+.btn-primary:focus {
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), .5);
+}
+
+
+/* Botón secundario (ej. .btn-secondary) */
+.btn-secondary {
+    background-color: var(--color-secundario);
+    border-color: var(--color-secundario);
+    color: var(--color-negro);
+}
+.btn-secondary:hover {
+    background-color: var(--color-principal); /* Fondo Principal en hover */
+    border-color: var(--color-principal); /* Borde Principal en hover */
+    color: white; /* Texto Blanco en hover */
+}
+.btn-secondary:focus {
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs-secondary-rgb), .5);
+}
+
+/* Aquí podrías continuar para los otros tipos de botones (success, danger, etc.)
+   Decide qué color de fondo y texto quieres para su estado hover.
+   Por ejemplo, para .btn-success:hover podrías usar --color-secundario con --color-negro también,
+   o un color más oscuro de --color-verde.
+*/
+
+/* Botón de éxito (ej. .btn-success) */
+.btn-success {
+    background-color: var(--color-verde);
+    border-color: var(--color-verde);
+    color: white;
+}
+.btn-success:hover {
+    background-color: var(--color-secundario); /* Fondo Secundario en hover */
+    border-color: var(--color-secundario);
+    color: var(--color-negro); /* Texto Negro en hover */
+}
+.btn-success:focus {
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs-success-rgb), .5);
+}
+
+/* Botón de peligro (ej. .btn-danger) */
+.btn-danger {
+    background-color: var(--color-rojo);
+    border-color: var(--color-rojo);
+    color: white;
+}
+.btn-danger:hover {
+    background-color: var(--color-secundario); /* Fondo Secundario en hover */
+    border-color: var(--color-secundario);
+    color: var(--color-negro); /* Texto Negro en hover */
+}
+.btn-danger:focus {
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs-danger-rgb), .5);
+}
+
+/* Botón oscuro (ej. .btn-dark) */
+.btn-dark {
+    background-color: var(--color-negro);
+    border-color: var(--color-negro);
+    color: white;
+}
+.btn-dark:hover {
+    background-color: var(--color-secundario); /* Fondo Secundario en hover */
+    border-color: var(--color-secundario);
+    color: var(--color-negro); /* Texto Negro en hover */
+}
+.btn-dark:focus {
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs-dark-rgb), .5);
+}
+
+/* Botón claro (ej. .btn-light) */
+.btn-light {
+    background-color: var(--color-plomo);
+    border-color: var(--color-plomo);
+    color: var(--color-negro);
+}
+.btn-light:hover {
+    background-color: var(--color-principal); /* Fondo Principal en hover */
+    border-color: var(--color-principal);
+    color: white; /* Texto Blanco en hover */
+}
+.btn-light:focus {
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs-light-rgb), .5);
+}
+
+/* --- FIN ESTILOS PARA LOS BOTONES --- */
+
+#wrapper {
+    display: flex; /* Usar flexbox para el diseño de sidebar y contenido */
+    min-height: 100vh;
+}
+
+#sidebar-wrapper {
+    min-height: 100vh;
+    margin-left: -15rem; /* Oculta la barra lateral por defecto */
+    transition: margin .25s ease-out;
+    width: 15rem; /* Ancho de la barra lateral */
+    z-index: 1000;
+}
+
+#sidebar-wrapper .sidebar-heading {
+    padding: 0.875rem 1.25rem;
+    font-size: 1.2rem;
+}
+
+#sidebar-wrapper .list-group {
+    width: 15rem;
+}
+
+#page-content-wrapper {
+    min-width: 100vw;
+    flex-grow: 1; /* Permite que el contenido ocupe el espacio restante */
+    background-color: #f8f9fa; /* Un color de fondo suave para el área de contenido */
+}
+
+/* Estilo para cuando la sidebar está visible */
+body.sb-sidenav-toggled #wrapper #sidebar-wrapper {
+    margin-left: 0;
+}
+
+/* Pequeños ajustes para pantallas pequeñas */
+@media (min-width: 768px) {
+    #sidebar-wrapper {
+        margin-left: 0; /* Sidebar visible en pantallas grandes por defecto */
+    }
+    #page-content-wrapper {
+        min-width: 0;
+        width: 100%;
+    }
+    body.sb-sidenav-toggled #wrapper #sidebar-wrapper {
+        margin-left: -15rem; /* Oculta la sidebar en grandes si se toggles */
+    }
+}
+
+/* Estilos de la Navbar */
+.navbar-dark .navbar-nav .nav-link {
+    color: rgba(255, 255, 255, 0.75);
+}
+.navbar-dark .navbar-nav .nav-link:hover,
+.navbar-dark .navbar-nav .nav-link:focus {
+    color: rgba(255, 255, 255, 1);
+}
+
+/* Estilos de los elementos de la lista lateral */
+.list-group-item.active {
+    background-color: #0d6efd; /* Color de Bootstrap primary */
+    border-color: #0d6efd;
+    color: #fff;
+}
+.list-group-item-action:hover {
+    background-color: #e2e6ea;
+}

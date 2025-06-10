@@ -1,16 +1,13 @@
 package com.bag.Book_Store.controller;
 
+import com.bag.Book_Store.mapper.BookMapper;
 import com.bag.Book_Store.model.dto.BookRequest;
-import com.bag.Book_Store.model.dto.response.AuthorResponse;
-import com.bag.Book_Store.model.dto.response.BookResponse;
-import com.bag.Book_Store.model.dto.response.BookSearchResponse;
-import com.bag.Book_Store.model.dto.response.CategoryResponse;
+import com.bag.Book_Store.model.dto.response.*;
 import com.bag.Book_Store.model.entity.Author;
 import com.bag.Book_Store.model.entity.Book;
 import com.bag.Book_Store.model.entity.Category;
-import com.bag.Book_Store.service.AuthorService;
-import com.bag.Book_Store.service.BookService;
-import com.bag.Book_Store.service.CategoryService;
+import com.bag.Book_Store.service.*;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +24,9 @@ public class BookController {
     private final CategoryService categoryService;
     private final BookService bookService;
     private final AuthorService authorService;
+    private final FormatService formatService;
+    private final EditorialService editorialService;
+    private final BookMapper bookMapper;
 
     @GetMapping("/")
     public String mostrarIndex(Model model) {
@@ -35,11 +35,30 @@ public class BookController {
         return "index";
     }
 
+    @GetMapping("/admin/books")
+    public String findAll(Model model) {
+        model.addAttribute("books", bookService.findAll());
+        return "admin/books/list";
+    }
+
+    @GetMapping("/admin/books/new")
+    public String showAddBookForm(Model model) {
+        model.addAttribute("allCategories", categoryService.findAll());
+        model.addAttribute("allAuthors", authorService.findAll());
+        model.addAttribute("allFormats", formatService.findAll());
+        model.addAttribute("allEditorials", editorialService.findAll());
+        model.addAttribute("bookNew", new BookRequest());
+        return "admin/books/form";
+    }
     @GetMapping("/listado")
     public String listado(Model model) {
         List<BookResponse> books = bookService.findAll();
         List<CategoryResponse> categories = categoryService.findAll();
         List<AuthorResponse> authors = authorService.findAll();
+        List<FormatResponse> formats = formatService.findAll();
+        List<EditorialResponse> editorials = editorialService.findAll();
+        model.addAttribute("formats",formats);
+        model.addAttribute("editorials",editorials);
         model.addAttribute("books",books);
         model.addAttribute("categories",categories);
         model.addAttribute("authors",authors);
@@ -89,9 +108,38 @@ public class BookController {
         return ResponseEntity.ok(books);
     }
 
-    @PostMapping("/listado")
-    public ResponseEntity<BookResponse> guardarLibro(@RequestBody BookRequest request) {
+    @PostMapping("/api/books")
+    public ResponseEntity<BookResponse> guardarLibro(@Valid @RequestBody BookRequest request) {
         BookResponse book = bookService.save(request);
         return ResponseEntity.ok(book);
+    }
+
+    @PostMapping("/admin/books/save")
+    private String addBook(@Valid @ModelAttribute("bookRequest") BookRequest book) {
+        bookService.save(book);
+        return "redirect:/admin/books";
+    }
+    @PostMapping("/admin/books/delete/{id}")
+    public String deleteBook(@PathVariable Long id) {
+        bookService.deleteById(id);
+        return "redirect:/admin/books";
+    }
+
+    @GetMapping("/admin/books/edit/{id}")
+    public String showEditBookForm(@PathVariable Long id, Model model) {
+        BookRequest bookRequest = bookMapper.toBookRequest(bookService.findById(id));
+        model.addAttribute("bookRequest", bookRequest);
+        model.addAttribute("allCategories", categoryService.findAll());
+        model.addAttribute("allAuthors", authorService.findAll());
+        model.addAttribute("allFormats", formatService.findAll());
+        model.addAttribute("allEditorials", editorialService.findAll());
+        return "admin/books/form-edit";
+    }
+
+    @PostMapping("/admin/books/update/{id}")
+    public String updateBook(@PathVariable Long id,
+                             @Valid @ModelAttribute("bookRequest") BookRequest book) {
+        bookService.update(id, book);
+        return "redirect:/admin/books";
     }
 }

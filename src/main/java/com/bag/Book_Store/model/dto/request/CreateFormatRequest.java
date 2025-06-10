@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class CreateFormarRequest {
+public class CreateFormatRequest {
 
     @NotEmpty(message = "Name is required")
     private String name;

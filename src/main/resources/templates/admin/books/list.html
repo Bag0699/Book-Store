@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/admin-layout}">
+<head>
+    <title>Administración de Libros</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h1 class="mt-4">Gestión de Libros</h1>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <p class="lead">Aquí puedes ver y gestionar todos los libros de tu inventario.</p>
+        <a th:href="@{/admin/books/new}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Nuevo Libro
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">Lista de Libros</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead class="bg-light text-dark">
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Portada</th> <th scope="col">Título</th>
+                        <th scope="col">Autor(es)</th>
+                        <th scope="col">Categoría</th>
+                        <th scope="col">Editorial</th>
+                        <th scope="col">Formato</th>
+                        <th scope="col">Precio</th>
+                        <th scope="col">Stock</th>
+                        <th scope="col">Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="book : ${books}">
+                        <td th:text="${book.id}">1</td>
+                        <td>
+                            <img th:if="${book.urlImg != null and !book.urlImg.isEmpty()}"
+                                 th:src="${book.urlImg}"
+                                 alt="Portada"
+                                 style="max-width: 50px; height: auto; border: 1px solid #eee;">
+                            <span th:unless="${book.urlImg != null and !book.urlImg.isEmpty()}"
+                                  class="text-muted" style="font-size: 0.8em;">Sin portada</span>
+                        </td>
+                        <td th:text="${book.title}">Cien años de soledad</td>
+                        <td>
+                            <span th:if="${book.author != null}" th:text="${book.author.name}">Gabriel García Márquez</span>
+                            <span th:unless="${book.author != null}">N/A</span>
+                        </td>
+                        <td>
+                            <span th:if="${book.category != null}" th:text="${book.category.name}">Novela</span>
+                            <span th:unless="${book.category != null}">N/A</span>
+                        </td>
+                        <td>
+                            <span th:if="${book.editorial != null}" th:text="${book.editorial.name}">Sudamericana</span>
+                            <span th:unless="${book.editorial != null}">N/A</span>
+                        </td>
+                        <td>
+                            <span th:if="${book.format != null}" th:text="${book.format.name}">Tapa Dura</span>
+                            <span th:unless="${book.format != null}">N/A</span>
+                        </td>
+                        <td th:text="${'S/'+book.price}">$25.00</td>
+                        <td th:text="${book.stock}">150</td>
+                        <td>
+                            <a th:href="@{/admin/books/edit/{id}(id=${book.id})}"
+                               class="btn btn-sm btn-primary me-2">
+                                <i class="bi bi-pencil-square"></i> Editar
+                            </a>
+                            <form th:action="@{/admin/books/delete/{id}(id=${book.id})}" method="post"
+                                  style="display:inline;"
+                                  onsubmit="return confirm('¿Estás seguro de que quieres eliminar este libro?');">
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    <i class="bi bi-trash"></i> Eliminar
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr th:if="${books.isEmpty()}">
+                        <td colspan="10" class="text-center text-muted">No hay libros registrados.</td> </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="page-js">
+</th:block>
+</body>
+</html>

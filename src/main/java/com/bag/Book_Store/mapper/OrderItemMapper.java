@@ -5,7 +5,7 @@ import com.bag.Book_Store.model.dto.response.OrderItemResponse;
 import com.bag.Book_Store.model.entity.OrderItem;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "spring", uses = {OrderMapper.class, BookMapper.class})
+@Mapper(componentModel = "spring", uses = {BookMapper.class})
 public interface OrderItemMapper {
 
     OrderItemResponse toOrderItemResponse(OrderItem orderItem);
