@@ -3,8 +3,10 @@ package com.bag.Book_Store.service;
 import com.bag.Book_Store.exception.BookNotFoundException;
 import com.bag.Book_Store.exception.OrderNotFoundException;
 import com.bag.Book_Store.exception.UserNotFoundException;
+import com.bag.Book_Store.mapper.OrderItemMapper;
 import com.bag.Book_Store.mapper.OrderMapper;
 import com.bag.Book_Store.model.dto.request.CreateOrderRequest;
+import com.bag.Book_Store.model.dto.response.OrderItemResponse;
 import com.bag.Book_Store.model.dto.response.OrderResponse;
 import com.bag.Book_Store.model.entity.Order;
 import com.bag.Book_Store.model.entity.OrderItem;
@@ -31,6 +33,7 @@ public class OrderServiceImpl implements OrderService {
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
     private final OrderMapper orderMapper;
+    private final OrderItemMapper orderItemMapper;
     private final OrderItemRepository orderItemRepository;
 
     @Transactional
@@ -103,6 +106,17 @@ public class OrderServiceImpl implements OrderService {
             throw new OrderNotFoundException();
         }
         orderRepository.deleteById(id);
+    }
+
+    @Override
+    public List<OrderItemResponse> findAllOrderItemsByOrderId(Long orderId) {
+        if(!orderRepository.existsById(orderId)) {
+            throw new OrderNotFoundException();
+        }
+        return orderItemRepository.findAllByOrder_Id(orderId)
+                .stream()
+                .map(orderItemMapper::toOrderItemResponse)
+                .collect(Collectors.toList());
     }
 
 }
