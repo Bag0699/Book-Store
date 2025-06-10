@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/admin-layout}">
+<head>
+    <title th:text="${user.id} ? 'Editar Usuario' : 'Nuevo Usuario'">Formulario de Usuario</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h1 class="mt-4" th:text="${user.id} ? 'Editar Usuario' : 'Crear Nuevo Usuario'"></h1>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0" th:text="${user.id} ? 'Formulario de Edición' : 'Formulario de Creación'"></h5>
+        </div>
+        <div class="card-body">
+            <form th:action="@{'/admin/users/update/' + ${user.id}}" th:object="${user}" method="post">
+
+                <input type="hidden" th:field="*{id}" />
+
+                <div class="mb-3">
+                    <label for="username" class="form-label">Nombre de Usuario:</label>
+                    <input type="text" class="form-control" id="username" th:field="*{username}"
+                           th:errorclass="is-invalid" placeholder="Ej. juanperez" required>
+                    <div class="invalid-feedback" th:errors="*{username}"></div>
+                </div>
+
+<!--                <div class="mb-3">-->
+<!--                    <label for="password" class="form-label">Contraseña:</label>-->
+<!--                    <input type="password" class="form-control" id="password" th:field="*{password}"-->
+<!--                           th:errorclass="is-invalid" placeholder="Mínimo 6 caracteres" th:required="${user.id == null}">-->
+<!--                    <div class="invalid-feedback" th:errors="*{password}"></div>-->
+<!--                    <small th:if="${user.id != null}" class="form-text text-muted">Deja en blanco para mantener la contraseña actual.</small>-->
+<!--                </div>-->
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email:</label>
+                    <input type="email" class="form-control" id="email" th:field="*{email}"
+                           th:errorclass="is-invalid" placeholder="Ej. correo@ejemplo.com" required>
+                    <div class="invalid-feedback" th:errors="*{email}"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="fullName" class="form-label">Nombre y Apellido:</label>
+                    <input type="text" class="form-control" id="fullName" th:field="*{fullName}"
+                           th:errorclass="is-invalid" placeholder="Ej. Juan Perez" required>
+                    <div class="invalid-feedback" th:errors="*{fullName}"></div>
+                </div>
+
+                <!--        <div class="mb-3">-->
+                <!--          <label for="role" class="form-label">Rol:</label>-->
+                <!--          <select class="form-select" id="role" th:field="*{role}" th:errorclass="is-invalid" required>-->
+                <!--            <option value="">Selecciona un rol</option>-->
+                <!--            <option th:each="enumRole : ${allRoles}"-->
+                <!--                    th:value="${enumRole.name()}"  th:text="${enumRole.name}"     th:selected="${user.role != null and user.role == enumRole}">-->
+                <!--              Nombre del Rol-->
+                <!--            </option>-->
+                <!--          </select>-->
+                <!--          <div class="invalid-feedback" th:errors="*{role}"></div>-->
+                <!--        </div>-->
+
+                <div class="d-flex justify-content-end mt-4">
+                    <a th:href="@{/admin/users}" class="btn btn-secondary me-2">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save"></i> Guardar Usuario
+                    </button>
+                </div>
+            </form>
+            <hr class="my-4">
+
+            <div class="mt-3">
+                <a th:href="@{/admin/users/change_password/{id}(id=${user.id})}" class="btn btn-warning">
+                    <i class="bi bi-key"></i> Cambiar Contraseña
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="page-css"></th:block>
+<th:block layout:fragment="page-js"></th:block>
+</body>
+</html>
