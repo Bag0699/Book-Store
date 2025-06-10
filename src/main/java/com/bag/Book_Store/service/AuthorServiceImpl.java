@@ -52,6 +52,17 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
+    public AuthorResponse update(Long id, CreateAuthorRequest request) {
+        return authorRepository.findById(id)
+                .map(author -> {
+                    author.setName(request.getName());
+                     return authorRepository.save(author);
+                })
+                .map(authorMapper::toAuthorResponse)
+                .orElseThrow(AuthorNotFoundException::new);
+    }
+
+    @Override
     public void deleteById(Long id) {
         if(!authorRepository.existsById(id)) {
             throw new AuthorNotFoundException();

@@ -15,13 +15,34 @@
             <h5 class="mb-0" th:text="${author.id} ? 'Formulario de Edición' : 'Formulario de Creación'"></h5>
         </div>
         <div class="card-body">
-            <form th:action="@{/admin/authors/save}" th:object="${author}" method="post">
+            <form th:unless="${author.id != null}" th:action="@{/admin/authors/save}" th:object="${author}" method="post">
 
                 <input type="hidden" th:field="*{id}" />
 
                 <div class="mb-3">
                     <label for="name" class="form-label">Nombre del Autor:</label>
                     <input type="text" class="form-control" id="name" th:field="*{name}"
+                           th:errorclass="is-invalid" placeholder="Ej. Gabriel García Márquez" required>
+                    <div class="invalid-feedback" th:errors="*{name}"></div>
+                </div>
+
+                <div class="d-flex justify-content-end mt-4">
+                    <a th:href="@{/admin/authors}" class="btn btn-secondary me-2">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save"></i> Guardar Autor
+                    </button>
+                </div>
+            </form>
+
+            <form th:if="${author.id != null}" th:action="@{'/admin/authors/update/' + ${author.id}}" th:object="${author}" method="post">
+
+                <input type="hidden" th:field="*{id}" />
+
+                <div class="mb-3">
+                    <label for="nameEdit" class="form-label">Nombre del Autor:</label>
+                    <input type="text" class="form-control" id="nameEdit" th:field="*{name}"
                            th:errorclass="is-invalid" placeholder="Ej. Gabriel García Márquez" required>
                     <div class="invalid-feedback" th:errors="*{name}"></div>
                 </div>
