@@ -10,6 +10,7 @@ import com.bag.Book_Store.model.entity.User;
 import com.bag.Book_Store.repository.UserRepository;
 import com.bag.Book_Store.util.Role;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -21,10 +22,12 @@ public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserResponse save(CreateUserRequest request) {
         User user = userMapper.toUser(request);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRegisterDate(LocalDate.now());
         user.setRole(Role.ADMIN);
         return userMapper.toUserResponse(userRepository.save(user));
@@ -74,7 +77,7 @@ public class UserServiceImpl implements UserService{
         if(!request.getNewPassword().equals(request.getConfirmPassword())) {
             throw new IllegalArgumentException("La nueva contraseña y la confirmación no coinciden.");
         }
-        user.setPassword(request.getNewPassword());
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userRepository.save(user);
     }
 }
