@@ -1,11 +1,10 @@
 package com.bag.Book_Store.service;
 
-import com.bag.Book_Store.exception.BookNotFoundException;
+import com.bag.Book_Store.exception.*;
 import com.bag.Book_Store.mapper.BookMapper;
 import com.bag.Book_Store.model.dto.BookRequest;
 import com.bag.Book_Store.model.dto.response.BookResponse;
 import com.bag.Book_Store.model.dto.response.BookSearchResponse;
-import com.bag.Book_Store.model.dto.response.FormatResponse;
 import com.bag.Book_Store.model.entity.*;
 import com.bag.Book_Store.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -96,19 +95,6 @@ public class BookServiceImpl implements BookService{
                 .orElse(null);
 
         if(author != null && category != null && editorial != null && format != null ) {
-//            Book book = new Book();
-//            book.setTitle(request.getTitle());
-//            book.setAuthor(author);
-//            book.setSinopsis(request.getSinopsis());
-//            book.setPrice(request.getPrice());
-//            book.setIsbn(request.getIsbn());
-//            book.setDescription(request.getDescription());
-//            book.setUrlImg(request.getUrlImg());
-//            book.setCategory(category);
-//            book.setStock(request.getStock());
-//            book.setDimension(request.getDimension());
-//            book.setFormat(format);
-//            book.setEditorial(editorial);
             Book book = bookMapper.toBook(request);
             book.setAuthor(author);
             book.setCategory(category);
@@ -118,5 +104,35 @@ public class BookServiceImpl implements BookService{
         } else {
             throw new IllegalArgumentException("El autor o la categoria o formato o editorial no existe");
         }
+    }
+
+    @Override
+    public BookResponse update(Long id, BookRequest request) {
+        return bookRepository.findById(id)
+                .map( book -> authorRepository.findById(request.getAuthorId())
+                        .map(author -> categoryRepository.findById(request.getCategoryId())
+                                .map(category -> editorialRepository.findById(request.getEditorialId())
+                                        .map(editorial -> formatRepository.findById(request.getFormatId())
+                                                .map(format -> {
+                                                    book.setTitle(request.getTitle());
+                                                    book.setSinopsis(request.getSinopsis());
+                                                    book.setPrice(request.getPrice());
+                                                    book.setIsbn(request.getIsbn());
+                                                    book.setDescription(request.getDescription());
+                                                    book.setUrlImg(request.getUrlImg());
+                                                    book.setStock(request.getStock());
+                                                    book.setDimension(request.getDimension());
+                                                    book.setCategory(category);
+                                                    book.setAuthor(author);
+                                                    book.setFormat(format);
+                                                    book.setEditorial(editorial);
+                                                    return bookRepository.save(book);
+                                                })
+                                                .orElseThrow(FormatNotFoundException::new))
+                                        .orElseThrow(EditorialNotFoundException::new))
+                                .orElseThrow(CategoryNotFoundException::new))
+                        .orElseThrow(AuthorNotFoundException::new))
+                .map(bookMapper::toBookResponse)
+                .orElseThrow(BookNotFoundException::new);
     }
 }

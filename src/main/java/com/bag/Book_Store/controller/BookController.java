@@ -1,5 +1,6 @@
 package com.bag.Book_Store.controller;
 
+import com.bag.Book_Store.mapper.BookMapper;
 import com.bag.Book_Store.model.dto.BookRequest;
 import com.bag.Book_Store.model.dto.response.*;
 import com.bag.Book_Store.model.entity.Author;
@@ -25,6 +26,7 @@ public class BookController {
     private final AuthorService authorService;
     private final FormatService formatService;
     private final EditorialService editorialService;
+    private final BookMapper bookMapper;
 
     @GetMapping("/")
     public String mostrarIndex(Model model) {
@@ -115,6 +117,29 @@ public class BookController {
     @PostMapping("/admin/books/save")
     private String addBook(@Valid @ModelAttribute("bookRequest") BookRequest book) {
         bookService.save(book);
+        return "redirect:/admin/books";
+    }
+    @PostMapping("/admin/books/delete/{id}")
+    public String deleteBook(@PathVariable Long id) {
+        bookService.deleteById(id);
+        return "redirect:/admin/books";
+    }
+
+    @GetMapping("/admin/books/edit/{id}")
+    public String showEditBookForm(@PathVariable Long id, Model model) {
+        BookRequest bookRequest = bookMapper.toBookRequest(bookService.findById(id));
+        model.addAttribute("bookRequest", bookRequest);
+        model.addAttribute("allCategories", categoryService.findAll());
+        model.addAttribute("allAuthors", authorService.findAll());
+        model.addAttribute("allFormats", formatService.findAll());
+        model.addAttribute("allEditorials", editorialService.findAll());
+        return "admin/books/form-edit";
+    }
+
+    @PostMapping("/admin/books/update/{id}")
+    public String updateBook(@PathVariable Long id,
+                             @Valid @ModelAttribute("bookRequest") BookRequest book) {
+        bookService.update(id, book);
         return "redirect:/admin/books";
     }
 }
