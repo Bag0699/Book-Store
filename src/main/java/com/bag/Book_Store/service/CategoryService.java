@@ -13,4 +13,5 @@ public interface CategoryService {
     List<CategoryResponse> findAll();
     Map<String, Long> getBookCountByCategory();
     void deleteById(Long id);
+    CategoryResponse update(Long id, CreateCategoryRequest request);
 }

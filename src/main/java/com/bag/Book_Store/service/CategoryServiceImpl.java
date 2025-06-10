@@ -61,4 +61,16 @@ public class CategoryServiceImpl implements CategoryService {
         }
         categoryRepository.deleteById(id);
     }
+
+    @Override
+    public CategoryResponse update(Long id, CreateCategoryRequest request) {
+        return categoryRepository.findById(id)
+                .map(category -> {
+                    category.setName(request.getName());
+                    category.setDescription(request.getDescription());
+                    return categoryRepository.save(category);
+                })
+                .map(categoryMapper::toCategoryResponse)
+                .orElseThrow(CategoryNotFoundException::new);
+    }
 }

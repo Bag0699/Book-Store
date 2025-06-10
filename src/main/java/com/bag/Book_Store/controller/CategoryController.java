@@ -3,6 +3,7 @@ package com.bag.Book_Store.controller;
 import com.bag.Book_Store.model.dto.request.CreateCategoryRequest;
 import com.bag.Book_Store.model.entity.Category;
 import com.bag.Book_Store.service.CategoryService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,6 +37,19 @@ public class CategoryController {
     @PostMapping("/delete/{id}")
     public String deleteCategory(@PathVariable Long id) {
         categoryService.deleteById(id);
+        return "redirect:/admin/categories";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String showEditCategoryForm(@PathVariable Long id, Model model) {
+        model.addAttribute("category", categoryService.findById(id));
+        return "admin/categories/form";
+    }
+
+    @PostMapping("/update/{id}")
+    public String editCategory(@PathVariable Long id,
+                               @Valid @ModelAttribute("category")CreateCategoryRequest category) {
+        categoryService.update(id, category);
         return "redirect:/admin/categories";
     }
 }
