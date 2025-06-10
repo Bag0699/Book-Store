@@ -4,6 +4,7 @@ import com.bag.Book_Store.model.dto.request.CreateStoreRequest;
 import com.bag.Book_Store.model.dto.response.StoreResponse;
 import com.bag.Book_Store.model.entity.Store;
 import com.bag.Book_Store.service.StoreService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -51,6 +52,19 @@ public class StoreController {
     @PostMapping("/admin/stores/delete/{id}")
     public String deleteStore(@PathVariable Long id) {
         storeService.deleteById(id);
+        return "redirect:/admin/stores";
+    }
+
+    @GetMapping("/admin/stores/edit/{id}")
+    public String showEditStoreForm(@PathVariable Long id, Model model) {
+        model.addAttribute("store", storeService.findById(id));
+        return "admin/stores/form";
+    }
+
+    @PostMapping("/admin/stores/update/{id}")
+    public String editStore(@PathVariable Long id,
+                            @Valid @ModelAttribute("store")CreateStoreRequest store) {
+        storeService.update(id, store);
         return "redirect:/admin/stores";
     }
 }
