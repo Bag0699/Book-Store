@@ -15,8 +15,11 @@
     </div>
 
     <div class="card shadow-sm">
-        <div class="card-header bg-dark text-white">
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Lista de Órdenes</h5>
+            <a th:href="@{/api/orders/order-by-month}" class="btn btn-secondary btn-sm">
+                <i class="bi bi-arrow-right-circle"></i> Órdenes por Mes
+            </a>
         </div>
         <div class="card-body">
             <div class="table-responsive">

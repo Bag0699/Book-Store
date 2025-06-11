@@ -1,12 +1,9 @@
 package com.bag.Book_Store.service;
 
-import com.bag.Book_Store.model.dto.request.CreateOrderItemRequest;
 import com.bag.Book_Store.model.dto.request.CreateOrderRequest;
 import com.bag.Book_Store.model.dto.response.OrderItemResponse;
 import com.bag.Book_Store.model.dto.response.OrderResponse;
 import com.bag.Book_Store.model.dto.response.OrderWithUserDetailsResponse;
-import com.bag.Book_Store.model.entity.Order;
-import com.bag.Book_Store.model.entity.OrderItem;
 
 import java.util.List;
 
