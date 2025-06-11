@@ -4,6 +4,7 @@ import com.bag.Book_Store.model.dto.request.CreateOrderItemRequest;
 import com.bag.Book_Store.model.dto.request.CreateOrderRequest;
 import com.bag.Book_Store.model.dto.response.OrderItemResponse;
 import com.bag.Book_Store.model.dto.response.OrderResponse;
+import com.bag.Book_Store.model.dto.response.OrderWithUserDetailsResponse;
 import com.bag.Book_Store.model.entity.Order;
 import com.bag.Book_Store.model.entity.OrderItem;
 
@@ -18,4 +19,5 @@ public interface OrderService {
     void deleteById(Long id);
 //    OrderItem processOrderItem(CreateOrderItemRequest request, Order order);
     List<OrderItemResponse> findAllOrderItemsByOrderId(Long orderId);
+    List<OrderWithUserDetailsResponse> findAllOrderByMonth(Integer month, Integer year);
 }

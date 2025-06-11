@@ -8,6 +8,7 @@ import com.bag.Book_Store.mapper.OrderMapper;
 import com.bag.Book_Store.model.dto.request.CreateOrderRequest;
 import com.bag.Book_Store.model.dto.response.OrderItemResponse;
 import com.bag.Book_Store.model.dto.response.OrderResponse;
+import com.bag.Book_Store.model.dto.response.OrderWithUserDetailsResponse;
 import com.bag.Book_Store.model.entity.Order;
 import com.bag.Book_Store.model.entity.OrderItem;
 import com.bag.Book_Store.model.entity.User;
@@ -119,4 +120,11 @@ public class OrderServiceImpl implements OrderService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    @Override
+    public List<OrderWithUserDetailsResponse> findAllOrderByMonth(Integer year, Integer month) {
+//        return orderRepository.getOrdersByMonth(year, month);
+        return orderRepository.getOrdersByMonthWithMapping(year, month);
+
+    }
 }

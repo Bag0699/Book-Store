@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/admin-layout}">
+<head>
+  <meta charset="UTF-8">
+  <title>Órdenes por Mes</title>
+</head>
+<body>
+<div layout:fragment="content">
+  <h1 class="mt-4">Órdenes por Mes</h1>
+
+  <div class="card shadow-sm mb-4">
+    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">Filtro de Órdenes</h5>
+    </div>
+    <div class="card-body">
+      <form th:action="@{/api/orders/order-by-month}" method="get" class="row g-3 align-items-end">
+        <div class="col-md-3">
+          <label for="year" class="form-label">Año:</label>
+          <select id="year" name="year" class="form-select">
+            <option th:each="y : ${years}" th:value="${y}" th:text="${y}"
+                    th:selected="${y == selectedYear}">2024</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label for="month" class="form-label">Mes:</label>
+          <select id="month" name="month" class="form-select">
+            <option th:each="m, stat : ${months}" th:value="${stat.index + 1}" th:text="${m}"
+                    th:selected="${(stat.index + 1) == selectedMonth}">Enero</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <button type="submit" class="btn btn-primary">
+            <i class="bi bi-filter"></i> Filtrar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="card shadow-sm mb-4 mt-4">
+    <div class="card-header bg-dark text-white">
+      <h5 class="mb-0" th:text="'Órdenes de ' + ${months[selectedMonth - 1]} + ' de ' + ${selectedYear}"></h5>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-striped table-hover">
+          <thead>
+          <tr>
+            <th>ID Orden</th>
+            <th>Fecha Orden</th>
+            <th>Estado</th>
+            <th>Total</th>
+            <th>ID Usuario</th>
+            <th>Usuario</th>
+            <th>Nombre del Usuario</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="order : ${orders}">
+            <td th:text="${order.id}">123</td>
+            <td th:text="${#temporals.format(order.orderDate, 'dd/MM/yyyy')}">01/05/2024</td>
+            <td th:text="${order.status}">Pendiente</td>
+            <td th:text="'S/. ' + ${#numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 2, 'POINT')}">$150.75</td>
+            <td th:text="${order.userId}">1</td>
+            <td th:text="${order.username}">john.doe</td>
+            <td th:text="${order.fullName}">John Doe</td>
+          </tr>
+          <tr th:if="${orders.isEmpty()}">
+            <td colspan="6" class="text-center">No hay órdenes para el mes y año seleccionados.</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<th:block layout:fragment="page-css"></th:block>
+<th:block layout:fragment="page-js"></th:block>
+</body>
+</html>

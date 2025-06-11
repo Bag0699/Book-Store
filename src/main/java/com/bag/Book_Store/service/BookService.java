@@ -17,4 +17,5 @@ public interface BookService {
     List<BookSearchResponse> findAllBySuggestion(String query);
     BookResponse save(BookRequest request);
     BookResponse update(Long id, BookRequest request);
+    List<Book> findAllByAuthor(Long id);
 }
