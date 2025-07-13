@@ -25,13 +25,23 @@ public class UserServiceImpl implements UserService{
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public UserResponse save(CreateUserRequest request) {
+    public UserResponse saveAdmin(CreateUserRequest request) {
         User user = userMapper.toUser(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRegisterDate(LocalDate.now());
         user.setRole(Role.ADMIN);
         return userMapper.toUserResponse(userRepository.save(user));
     }
+
+    @Override
+    public UserResponse saveUser(CreateUserRequest request) {
+        User user = userMapper.toUser(request);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRegisterDate(LocalDate.now());
+        user.setRole(Role.USER);
+        return userMapper.toUserResponse(userRepository.save(user));
+    }
+
 
     @Override
     public List<UserResponse> findAll() {

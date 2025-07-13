@@ -9,7 +9,8 @@ import java.util.List;
 
 public interface UserService {
 
-    UserResponse save(CreateUserRequest request);
+    UserResponse saveAdmin(CreateUserRequest request);
+    UserResponse saveUser(CreateUserRequest request);
     List<UserResponse> findAll();
     UserResponse findById(Long id);
     UserResponse update(Long id, EditUserRequest request);
