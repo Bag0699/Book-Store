@@ -9,6 +9,7 @@ import com.bag.Book_Store.model.dto.request.CreateOrderRequest;
 import com.bag.Book_Store.model.dto.response.OrderItemResponse;
 import com.bag.Book_Store.model.dto.response.OrderResponse;
 import com.bag.Book_Store.model.dto.response.OrderWithUserDetailsResponse;
+import com.bag.Book_Store.model.entity.Book;
 import com.bag.Book_Store.model.entity.Order;
 import com.bag.Book_Store.model.entity.OrderItem;
 import com.bag.Book_Store.model.entity.User;
@@ -17,6 +18,7 @@ import com.bag.Book_Store.repository.OrderItemRepository;
 import com.bag.Book_Store.repository.OrderRepository;
 import com.bag.Book_Store.repository.UserRepository;
 import com.bag.Book_Store.util.Status;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,9 +41,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     @Override
-    public OrderResponse save(CreateOrderRequest request) {
-        User user = userRepository.findById(request.getUserId())
+    public OrderResponse save(Long userId, CreateOrderRequest request) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
+
+        if(request.getItems() == null || request.getItems().isEmpty()) {
+            throw new IllegalArgumentException("La orden esta vacía.");
+        }
 
         //Validar y búsqueda del usuario y creación del order
         Order order = new Order();
@@ -49,36 +55,40 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderDate(LocalDate.now());
         order.setShippingAddress(request.getShippingAddress());
         order.setStatus(Status.PENDING);
-        Order savedOrder = orderRepository.save(order);
 
-        List<OrderItem> createdOrderItems = request.getItems().stream()
-                .map(itemRequest ->
-                        bookRepository.findById(itemRequest.getBookId())
-                                .map(book -> {
-                                    if (book.getStock() < itemRequest.getQuantity()) {
-                                        throw new IllegalArgumentException("No hay suficientes libros en stock");
-                                    }
-                                    book.setStock(book.getStock() - itemRequest.getQuantity());
-                                    bookRepository.save(book);
-                                    BigDecimal unitPrice = book.getPrice();
-                                    BigDecimal subTotal = unitPrice.multiply(BigDecimal.valueOf(itemRequest.getQuantity()));
-                                    OrderItem orderItem = new OrderItem();
+        List<OrderItem> createOrderItems = request.getItems().stream()
+                .map( itemRequest -> {
+                    Book book = bookRepository.findById(itemRequest.getBookId())
+                            .orElseThrow(BookNotFoundException::new);
+                    decreaseBookStock(book, itemRequest.getQuantity());
+                    BigDecimal unitPrice = book.getPrice();
+                    BigDecimal subTotal = unitPrice.multiply(BigDecimal.valueOf(itemRequest.getQuantity()));
 
-                                    orderItem.setBook(book);
-                                    orderItem.setUnitePrice(unitPrice);
-                                    orderItem.setQuantity(itemRequest.getQuantity());
-                                    orderItem.setSubTotal(subTotal);
-                                    orderItem.setOrder(savedOrder);
-                                    return orderItem;
-                                })
-                                .orElseThrow(BookNotFoundException::new))
+                    OrderItem orderItem = new OrderItem();
+                    orderItem.setBook(book);
+                    orderItem.setUnitePrice(unitPrice);
+                    orderItem.setQuantity(itemRequest.getQuantity());
+                    orderItem.setSubTotal(subTotal);
+                    orderItem.setOrder(order);
+                    return orderItem;
+                })
                 .collect(Collectors.toList());
-        orderItemRepository.saveAll(createdOrderItems);
-        BigDecimal totalAmount = createdOrderItems.stream()
+        order.setOrderItems(createOrderItems);
+        //Calcular el total
+        BigDecimal totalAmount = createOrderItems.stream()
                 .map(OrderItem::getSubTotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-        savedOrder.setTotalAmount(totalAmount);
-        return orderMapper.toOrderResponse(orderRepository.save(savedOrder));
+        order.setTotalAmount(totalAmount);
+        Order savedOrder = orderRepository.save(order);
+        return orderMapper.toOrderResponse(savedOrder);
+    }
+
+    private void decreaseBookStock(Book book, Integer quantity) {
+        if(book.getStock() < quantity) {
+            throw new IllegalArgumentException("No hay suficientes libros en stock");
+        }
+        book.setStock(book.getStock() - quantity);
+        bookRepository.save(book);
     }
 
     @Override

@@ -3,10 +3,12 @@ package com.bag.Book_Store.controller;
 import com.bag.Book_Store.model.dto.request.CreateOrderRequest;
 import com.bag.Book_Store.model.dto.response.OrderResponse;
 import com.bag.Book_Store.model.dto.response.OrderWithUserDetailsResponse;
+import com.bag.Book_Store.model.entity.User;
 import com.bag.Book_Store.service.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +27,12 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<OrderResponse> save(@Valid
-                                                  @RequestBody CreateOrderRequest request) {
-        return ResponseEntity.ok(orderService.save(request));
+                                                  @RequestBody CreateOrderRequest request,
+                                              @AuthenticationPrincipal User currentUser) {
+        if (currentUser == null) {
+            return ResponseEntity.status(401).build();
+        }
+        return ResponseEntity.ok(orderService.save(currentUser.getId(), request));
     }
 
     @GetMapping()

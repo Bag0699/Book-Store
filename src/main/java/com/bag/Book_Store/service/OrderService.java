@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface OrderService {
 
-    OrderResponse save(CreateOrderRequest request);
+    OrderResponse save(Long userId, CreateOrderRequest request);
     List<OrderResponse> findAll();
     OrderResponse findById(Long id);
     OrderResponse update(Long id, CreateOrderRequest request);
