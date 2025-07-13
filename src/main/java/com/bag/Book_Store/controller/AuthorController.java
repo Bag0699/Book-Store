@@ -3,6 +3,7 @@ package com.bag.Book_Store.controller;
 import com.bag.Book_Store.model.dto.request.CreateAuthorRequest;
 import com.bag.Book_Store.model.entity.Author;
 import com.bag.Book_Store.service.AuthorService;
+import com.bag.Book_Store.service.BookService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthorController {
 
     private final AuthorService authorService;
+    private final BookService bookService;
 
     @GetMapping
     public String findAll(Model model) {
@@ -52,5 +54,12 @@ public class AuthorController {
                              @Valid @ModelAttribute("author") CreateAuthorRequest author) {
         authorService.update(id, author);
         return "redirect:/admin/authors";
+    }
+
+    @GetMapping("/{id}/books")
+    public String showBookListByAuthor(@PathVariable Long id, Model model) {
+        model.addAttribute("author", authorService.findById(id));
+        model.addAttribute("books", bookService.findAllByAuthor(id));
+        return "admin/authors/books-list";
     }
 }

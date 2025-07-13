@@ -47,6 +47,10 @@
                                     <i class="bi bi-trash"></i> Eliminar
                                 </button>
                             </form>
+                            <a th:href="@{/admin/authors/{id}/books(id=${author.id})}"
+                               class="btn btn-sm btn-primary me-2">
+                                <i class="bi bi-pencil-square"></i> Libros
+                            </a>
                         </td>
                     </tr>
                     <tr th:if="${authors.isEmpty()}">

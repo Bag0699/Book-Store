@@ -1,6 +1,7 @@
 package com.bag.Book_Store.Config;
 
 import com.bag.Book_Store.service.CustomUserDetailService;
+import com.bag.Book_Store.util.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +14,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -37,19 +39,38 @@ public class SecurityConfig {
         return authProvider;
     }
 
+    @Bean
+    public AuthenticationSuccessHandler customAuthenticationSuccessHandler() {
+        return (request, response, authentication) -> {
+            if (authentication.getAuthorities().stream()
+                    .anyMatch(r -> r.getAuthority().equals("ROLE_" + Role.ADMIN.getAuthorityName()))) {
+                response.sendRedirect("/admin/dashboard");
+            }
+            else {
+                response.sendRedirect("/");
+            }
+        };
+    }
+
     //Se define la cadena de filtros de seguridad HTTP
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/", "/css/**", "/js/**", "/img/**").permitAll()
+                        .requestMatchers("/", "/css/**", "/js/**", "/img/**",
+                                "/listado","/galeria/**", "/libro/**","/buscar","/buscar/sugerencia",
+                                "/contactanos","/somos","/condiciones","/preguntas",
+                                "/login","/register"
+                        ).permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/cart","/api/cart").authenticated()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/admin/dashboard", true)
+                        .loginProcessingUrl("/perform_login")
+                        .successHandler(customAuthenticationSuccessHandler())
                         .failureUrl("/login?error=true")
                         .permitAll()
                 )

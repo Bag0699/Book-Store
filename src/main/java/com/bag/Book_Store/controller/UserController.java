@@ -36,7 +36,7 @@ public class UserController {
 
     @PostMapping("/save")
     public String addUser(@ModelAttribute CreateUserRequest request) {
-        userService.save(request);
+        userService.saveAdmin(request);
         return "redirect:/admin/users";
     }
 

@@ -1,5 +1,6 @@
 package com.bag.Book_Store.model.entity;
 
+import com.bag.Book_Store.model.dto.response.OrderWithUserDetailsResponse;
 import com.bag.Book_Store.util.Status;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,6 +10,8 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -16,6 +19,39 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "orders")
+//@NamedStoredProcedureQuery(
+//        name = "Order.getOrdersByMonth",
+//        procedureName = "GetOrdersByMonth",
+//        parameters = {
+//                @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_year", type = Integer.class),
+//                @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_month", type = Integer.class)
+//        },
+//        resultClasses = OrderWithUserDetailsResponse.class
+//)
+@NamedNativeQueries({
+        @NamedNativeQuery(
+                name = "GetOrdersByMonthMapping",
+                query = "CALL GetOrdersByMonth(:p_year, :p_month)",
+                resultSetMapping = "OrderWithUserDetailsResponseMapping"
+        )
+})
+@SqlResultSetMappings({
+        @SqlResultSetMapping(
+                name = "OrderWithUserDetailsResponseMapping",
+                classes = @ConstructorResult(
+                        targetClass = OrderWithUserDetailsResponse.class,
+                        columns = {
+                                @ColumnResult(name = "id", type = Long.class),
+                                @ColumnResult(name = "order_date", type = LocalDate.class),
+                                @ColumnResult(name = "total_amount", type = BigDecimal.class),
+                                @ColumnResult(name = "status", type = String.class),
+                                @ColumnResult(name = "user_id", type = Long.class),
+                                @ColumnResult(name = "username", type = String.class),
+                                @ColumnResult(name = "full_name", type = String.class)
+                        }
+                )
+        )
+})
 public class Order {
 
     @Id
@@ -37,4 +73,7 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     private Status status;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderItem> orderItems = new ArrayList<>();
 }

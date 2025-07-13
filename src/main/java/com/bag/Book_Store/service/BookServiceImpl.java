@@ -135,4 +135,9 @@ public class BookServiceImpl implements BookService{
                 .map(bookMapper::toBookResponse)
                 .orElseThrow(BookNotFoundException::new);
     }
+
+    @Override
+    public List<Book> findAllByAuthor(Long id) {
+        return bookRepository.findBooksByAuthorIdQuery(id);
+    }
 }

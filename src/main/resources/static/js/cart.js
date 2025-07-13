@@ -73,6 +73,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    function clearCart() {
+        cart = [];
+        saveCart();
+        updateCartIcon();
+    }
 
     // --- Event Listeners para la página principal de la galería ---
     document.body.addEventListener('click', function(event) {
@@ -99,7 +104,8 @@ document.addEventListener('DOMContentLoaded', function() {
         addToCart: addToCart,
         removeFromCart: removeFromCart,
         updateItemQuantity: updateItemQuantity,
-        getCart: () => cart // Función para obtener el carrito actual
+        getCart: () => cart, // Función para obtener el carrito actual
+        clearCart: clearCart
     };
 
     // --- Inicialización ---

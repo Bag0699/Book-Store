@@ -12,8 +12,8 @@ import java.util.List;
 @Getter
 public class CreateOrderRequest {
 
-    @NotNull(message = "User id cannot be null.")
-    private Long userId;
+//    @NotNull(message = "User id cannot be null.")
+//    private Long userId;
 
     @NotEmpty(message = "Shipping address is required")
     private String shippingAddress;
