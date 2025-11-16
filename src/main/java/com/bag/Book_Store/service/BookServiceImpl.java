@@ -8,9 +8,17 @@ import com.bag.Book_Store.model.dto.response.BookSearchResponse;
 import com.bag.Book_Store.model.entity.*;
 import com.bag.Book_Store.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,6 +27,8 @@ import java.util.stream.Collectors;
 @Transactional
 public class BookServiceImpl implements BookService{
 
+    @Value("${app.upload.dir:src/main/resources/static/img/}") // Valor por defecto si no se encuentra
+    private String UPLOAD_DIR;
 
     private final AuthorRepository authorRepository;
     private final CategoryRepository categoryRepository;
@@ -84,7 +94,7 @@ public class BookServiceImpl implements BookService{
     }
 
     @Override
-    public BookResponse save(BookRequest request) {
+    public BookResponse save(BookRequest request, MultipartFile imageFile) throws IOException {
         Author author = authorRepository.findById(request.getAuthorId())
                 .orElse(null);
         Category category = categoryRepository.findById(request.getCategoryId())
@@ -95,7 +105,36 @@ public class BookServiceImpl implements BookService{
                 .orElse(null);
 
         if(author != null && category != null && editorial != null && format != null ) {
+            // Guardado de img y generación de url
+            String imageUrl = null;
+            if(imageFile != null && !imageFile.isEmpty()  ) {
+                String fileName = StringUtils.cleanPath(imageFile.getOriginalFilename());
+              //Generar el nombre del archivo
+                String cleanTitle = request.getTitle().toLowerCase().replaceAll("[^a-z0-9\\s-]", "");
+                cleanTitle = cleanTitle.replaceAll("\\s+", "-").trim();
+
+                String fileExtension =  "";
+                int dotIndex = fileName.lastIndexOf('.');
+                if (dotIndex > 0) {
+                        fileExtension = fileName.substring(dotIndex);
+                }
+
+                String newFileName = cleanTitle + fileExtension;
+                Path uploadPath = Paths.get(UPLOAD_DIR);
+
+                if (!Files.exists(uploadPath)) {
+                    Files.createDirectories(uploadPath);
+                }
+                Path filePath = uploadPath.resolve(newFileName);
+                Files.copy(imageFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+                imageUrl = "/img/" + newFileName;
+            } else {
+                imageUrl = "/img/default-book.webp";
+            }
+
             Book book = bookMapper.toBook(request);
+            book.setUrlImg(imageUrl);
             book.setAuthor(author);
             book.setCategory(category);
             book.setFormat(format);

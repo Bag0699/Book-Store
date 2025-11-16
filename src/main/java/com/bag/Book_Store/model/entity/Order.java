@@ -19,15 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "orders")
-//@NamedStoredProcedureQuery(
-//        name = "Order.getOrdersByMonth",
-//        procedureName = "GetOrdersByMonth",
-//        parameters = {
-//                @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_year", type = Integer.class),
-//                @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_month", type = Integer.class)
-//        },
-//        resultClasses = OrderWithUserDetailsResponse.class
-//)
+
 @NamedNativeQueries({
         @NamedNativeQuery(
                 name = "GetOrdersByMonthMapping",
