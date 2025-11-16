@@ -1,0 +1,53 @@
+name: Despliegue a Producción (Sin Docker)
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Clonar repositorio
+      uses: actions/checkout@v4
+
+    - name: Configurar JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: 'maven'
+        
+    - name: Construir JAR Ejecutable con Maven
+      run: mvn clean package -DskipTests
+      
+    - name: Subir el JAR a Servidor Remoto (SCP)
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USERNAME }} 
+        key: ${{ secrets.SSH_PRIVATE_KEY }} 
+        port: 22
+        source: "target/*.jar"
+        target: "/var/www/bookstore" #directorio del servidor
+        
+    - name: Reiniciar el Servicio en Servidor Remoto (SSH)
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        
+        script: |
+
+          JAR_NAME=$(ls /var/www/bookstore/*.jar | head -n 1) 
+          APP_SERVICE_NAME="book-store-app"
+
+          echo "Deteniendo el servicio anterior..."
+          sudo systemctl stop $APP_SERVICE_NAME
+          
+          echo "Iniciando la nueva versión del servicio..."
+          sudo systemctl daemon-reload
+          sudo systemctl start $APP_SERVICE_NAME
+          
+          echo "El despliegue ha finalizado. Verifique el estado del servicio con 'sudo systemctl status $APP_SERVICE_NAME'"
