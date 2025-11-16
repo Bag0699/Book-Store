@@ -38,6 +38,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderMapper orderMapper;
     private final OrderItemMapper orderItemMapper;
     private final OrderItemRepository orderItemRepository;
+    private final EmailService emailService;
 
     @Transactional
     @Override
@@ -80,6 +81,32 @@ public class OrderServiceImpl implements OrderService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         order.setTotalAmount(totalAmount);
         Order savedOrder = orderRepository.save(order);
+
+        System.out.println("Nombre completo: " + user.getFullName());
+        System.out.println("Email: " + user.getEmail());
+        System.out.println("Monto total: " + savedOrder.getTotalAmount().doubleValue());
+        System.out.println("Numero de orden: " + savedOrder.getId());
+
+        //Correo de confirmación de la compra
+        try {
+            String fullName = user.getFullName();
+
+            Boolean emailSent = emailService.sendOrderConfirmationEmail(
+                    user.getEmail(),
+                    savedOrder.getId().toString(),
+                    savedOrder.getTotalAmount().doubleValue(),
+                    user.getFullName()
+            );
+            if (emailSent) {
+                System.out.println("Correo de confirmación de orden #" + savedOrder.getId() + " enviado al usuario " + user.getEmail());
+            } else {
+                System.err.println("Advertencia: No se pudo enviar el correo de confirmación para la orden #" + savedOrder.getId());
+            }
+        } catch (Exception e) {
+            System.err.println("Error inesperado al intentar enviar el correo para la orden #" + savedOrder.getId() + ": " + e.getMessage());
+            e.printStackTrace();
+        }
+
         return orderMapper.toOrderResponse(savedOrder);
     }
 
