@@ -16,7 +16,7 @@
       <h5 class="mb-0" th:text="${bookNew.id} ? 'Formulario de Edición' : 'Formulario de Creación'"></h5>
     </div>
     <div class="card-body">
-      <form th:action="@{/admin/books/save}" th:object="${bookNew}" method="post">
+      <form th:action="@{/admin/books/save}" th:object="${bookNew}" method="post" enctype="multipart/form-data">
 
         <input type="hidden" th:field="*{id}"/>
 
@@ -126,17 +126,24 @@
           <div class="invalid-feedback" th:errors="*{sinopsis}"></div>
         </div>
 
+<!--        <div class="mb-3">-->
+<!--          <label for="urlImg" class="form-label">URL de la Portada:</label>-->
+<!--          <input type="text" class="form-control" id="urlImg" th:field="*{urlImg}"-->
+<!--                 th:errorclass="is-invalid" placeholder="Ej. /img/tokio-blues.webp">-->
+<!--          <div class="invalid-feedback" th:errors="*{urlImg}"></div>-->
+<!--        </div>-->
+
         <div class="mb-3">
-          <label for="urlImg" class="form-label">URL de la Portada:</label>
-          <input type="text" class="form-control" id="urlImg" th:field="*{urlImg}"
-                 th:errorclass="is-invalid" placeholder="Ej. /img/tokio-blues.webp">
-          <div class="invalid-feedback" th:errors="*{urlImg}"></div>
+          <label for="imageFile" class="form-label">Cargar Portada (WEBP):</label>
+          <input type="file" class="form-control" id="imageFile" name="imageFile" accept="image/jpeg,image/png,image/webp,image/gif">
+          <div class="invalid-feedback" th:if="${#fields.hasErrors('urlImg')}" th:errors="*{urlImg}"></div>
+          <div class="alert alert-danger mt-2" role="alert" th:if="${errorMessage}" th:text="${errorMessage}"></div>
         </div>
 
-<!--        <div th:if="${book.urlImg != null and !book.urlImg.isEmpty()}" class="mb-3">-->
+<!--        <div th:if="${bookNew.urlImg != null and !bookNew.urlImg.isEmpty()}" class="mb-3">-->
 <!--          <label class="form-label">Vista Previa de la Portada:</label>-->
 <!--          <div class="d-block">-->
-<!--            <img th:src="${book.urlImg}" alt="Portada del Libro"-->
+<!--            <img th:src="${bookNew.urlImg}" alt="Portada del Libro"-->
 <!--                 style="max-width: 200px; height: auto; border: 1px solid #ddd; padding: 5px;">-->
 <!--          </div>-->
 <!--        </div>-->
