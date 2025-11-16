@@ -3,9 +3,6 @@ package com.bag.Book_Store.controller;
 import com.bag.Book_Store.mapper.BookMapper;
 import com.bag.Book_Store.model.dto.BookRequest;
 import com.bag.Book_Store.model.dto.response.*;
-import com.bag.Book_Store.model.entity.Author;
-import com.bag.Book_Store.model.entity.Book;
-import com.bag.Book_Store.model.entity.Category;
 import com.bag.Book_Store.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -13,8 +10,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -109,14 +109,36 @@ public class BookController {
     }
 
     @PostMapping("/api/books")
-    public ResponseEntity<BookResponse> guardarLibro(@Valid @RequestBody BookRequest request) {
-        BookResponse book = bookService.save(request);
+    public ResponseEntity<BookResponse> guardarLibro(@Valid @RequestBody BookRequest request,
+                                                     MultipartFile imageFile) throws IOException {
+        BookResponse book = bookService.save(request, imageFile);
         return ResponseEntity.ok(book);
     }
 
     @PostMapping("/admin/books/save")
-    private String addBook(@Valid @ModelAttribute("bookRequest") BookRequest book) {
-        bookService.save(book);
+    private String addBook(@Valid @ModelAttribute("bookRequest") BookRequest book,
+                           BindingResult results,
+                           @RequestParam("imageFile")MultipartFile imageFile,
+                           Model model) {
+        if (imageFile.isEmpty()) {
+            results.rejectValue("urlImg", "error.image", "La imagen de portada es obligatoria.");
+            model.addAttribute("allCategories", categoryService.findAll());
+            model.addAttribute("allAuthors", authorService.findAll());
+            model.addAttribute("allFormats", formatService.findAll());
+            model.addAttribute("allEditorials", editorialService.findAll());
+            return "admin/books/form";
+        }
+
+        try {
+            bookService.save(book, imageFile);
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "Error al guardar la imagen: " + e.getMessage());
+            model.addAttribute("allCategories", categoryService.findAll());
+            model.addAttribute("allAuthors", authorService.findAll());
+            model.addAttribute("allFormats", formatService.findAll());
+            model.addAttribute("allEditorials", editorialService.findAll());
+            return "admin/books/form";
+        }
         return "redirect:/admin/books";
     }
     @PostMapping("/admin/books/delete/{id}")
