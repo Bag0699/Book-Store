@@ -95,7 +95,12 @@
 			<artifactId>sendgrid-java</artifactId>
 			<version>4.10.1</version>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 	<build>
 		<plugins>
 			<plugin>
