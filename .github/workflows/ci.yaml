@@ -13,7 +13,7 @@ jobs:
     - name: Configurar JDK 17 (Temurin)
       uses: actions/setup-java@v4
       with:
-        java-version: '17'
+        java-version: '21'
         distribution: 'temurin'
         cache: 'maven'
     - name: Construir y Ejecutar Pruebas con Maven
