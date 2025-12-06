@@ -23,3 +23,12 @@ jobs:
         context: .
         push: true
         tags: ${{ secrets.DOCKER_USERNAME }}/bookstore:latest
+    - name: Desplegar en Render
+      run: |
+        # Si la URL no es nula, hacemos la petición
+        if [ -n "${{ secrets.RENDER_DEPLOY_HOOK }}" ]; then
+          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"
+          echo "Disparo de despliegue enviado a Render."
+        else
+          echo "Advertencia: No se ha configurado el secreto RENDER_DEPLOY_HOOK."
+        fi
