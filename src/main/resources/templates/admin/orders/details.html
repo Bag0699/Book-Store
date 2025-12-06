@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/admin-layout}">
+<head>
+  <title>Detalles de la Orden</title>
+</head>
+<body>
+<div layout:fragment="content">
+  <h1 class="mt-4">Detalles de la Orden</h1>
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <p class="lead" th:text="${'Detalles completos de la orden #' + order.id}"></p>
+    <a th:href="@{/api/orders/list}" class="btn btn-secondary">
+      <i class="bi bi-arrow-left"></i> Volver a Órdenes
+    </a>
+  </div>
+
+  <div class="card shadow-sm mb-4">
+    <div class="card-header bg-dark text-white">
+      <h5 class="mb-0">Información General de la Orden</h5>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <p><strong>ID de Orden:</strong> <span th:text="${order.id}">101</span></p>
+          <p><strong>Fecha de Orden:</strong> <span th:text="${order.orderDate}">01/01/2025 10:30</span></p>
+          <p><strong>Estado:</strong> <span th:text="${order.status}">PENDING</span></p>
+        </div>
+        <div class="col-md-6">
+          <p><strong>Total de la Orden:</strong> <span th:text="${'S/. ' + order.totalAmount}">$123.45</span></p>
+          <p><strong>Dirección de Envío:</strong> <span th:text="${order.shippingAddress}">Calle Falsa 123, Ciudad, País</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card shadow-sm mb-4">
+    <div class="card-header bg-dark text-white">
+      <h5 class="mb-0">Detalles del Cliente</h5>
+    </div>
+    <div class="card-body">
+      <div th:if="${order.user != null}">
+        <p><strong>ID de Cliente:</strong> <span th:text="${order.user.id}">1</span></p>
+        <p><strong>Nombre de Usuario:</strong> <span th:text="${order.user.username}">usuario_compra</span></p>
+        <p><strong>Nombre Completo:</strong> <span th:text="${order.user.fullName}">Nombre Completo Cliente</span></p>
+        <p><strong>Email:</strong> <span th:text="${order.user.email}">cliente@example.com</span></p>
+      </div>
+      <div th:unless="${order.user != null}" class="text-muted">
+        <p>Información del usuario no disponible.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-header bg-dark text-white">
+      <h5 class="mb-0">Libros en esta Orden</h5>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-hover table-striped">
+          <thead class="bg-light text-dark">
+          <tr>
+            <th scope="col">ID Libro</th>
+            <th scope="col">Portada</th>
+            <th scope="col">Título</th>
+            <th scope="col">Cantidad</th>
+            <th scope="col">Precio Unitario</th>
+            <th scope="col">Subtotal</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="item : ${orderItems}">
+            <td th:text="${item.book.id}">1</td>
+            <td>
+              <img th:if="${item.book.urlImg != null and !item.book.urlImg.isEmpty()}"
+                   th:src="${item.book.urlImg}"
+                   alt="Portada"
+                   style="max-width: 40px; height: auto; border: 1px solid #eee;">
+              <span th:unless="${item.book.urlImg != null and !item.book.urlImg.isEmpty()}"
+                    class="text-muted" style="font-size: 0.7em;">Sin portada</span>
+            </td>
+            <td th:text="${item.book.title}">Título del Libro</td>
+            <td th:text="${item.quantity}">2</td>
+            <td th:text="${'S/. '+ item.unitePrice}">$15.00</td>
+            <td th:text="${'S/. '+ item.subTotal}">$30.00</td>
+          </tr>
+          <tr th:if="${orderItems.isEmpty()}">
+            <td colspan="6" class="text-center text-muted">No hay libros en esta orden.</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<th:block layout:fragment="page-js"></th:block>
+</body>
+</html>

@@ -1,96 +1,182 @@
 package com.bag.Book_Store.service;
 
+import com.bag.Book_Store.exception.*;
+import com.bag.Book_Store.mapper.BookMapper;
 import com.bag.Book_Store.model.dto.BookRequest;
-import com.bag.Book_Store.model.dto.BookResponse;
-import com.bag.Book_Store.model.entity.Author;
-import com.bag.Book_Store.model.entity.Book;
-import com.bag.Book_Store.model.entity.Category;
-import com.bag.Book_Store.repository.InMemoryData;
+import com.bag.Book_Store.model.dto.response.BookResponse;
+import com.bag.Book_Store.model.dto.response.BookSearchResponse;
+import com.bag.Book_Store.model.entity.*;
+import com.bag.Book_Store.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class BookServiceImpl implements BookService{
 
-    private final InMemoryData inMemoryData;
-    private final AuthorService authorService;
-    private final CategoryService categoryService;
+    @Value("${app.upload.dir:src/main/resources/static/img/}") // Valor por defecto si no se encuentra
+    private String UPLOAD_DIR;
+
+    private final AuthorRepository authorRepository;
+    private final CategoryRepository categoryRepository;
+    private final EditorialRepository editorialRepository;
+    private final FormatRepository formatRepository;
+    private final BookRepository bookRepository;
+    private final BookMapper bookMapper;
 
     @Override
-    public List<Book> findAllByCategory(Long id){
-        return inMemoryData.books.stream()
-                .filter(book -> id.equals(book.getCategory().getId()))
-                .toList();
-    }
+    public List<BookResponse> findAllByCategory(Long id){
 
-    @Override
-    public Book findById(Long id){
-        return inMemoryData.books.stream()
-                .filter(book -> id.equals(book.getId()))
-                .findFirst()
-                .orElse(null);
-    }
-
-    @Override
-    public void deleteById(Long id) {
-        inMemoryData.books.stream()
-                .filter(book -> id.equals(book.getId()))
-                .findFirst()
-                .ifPresent(inMemoryData.books::remove);
-    }
-
-    @Override
-    public List<Book> searchByQuery(String query) {
-        String lowerCaseTitle = query.toLowerCase().trim();
-        return inMemoryData.books.stream()
-                .filter(book ->
-                        book.getTitle().toLowerCase().contains(lowerCaseTitle) ||
-                        book.getAuthor().getName().toLowerCase().contains(lowerCaseTitle))
+        return   bookRepository.findAllByCategory_Id(id)
+                .stream()
+                .map(bookMapper::toBookResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<Book> findAll() {
-        return inMemoryData.books;
+    public BookResponse findById(Long id){
+        return bookRepository.findById(id)
+                .map(bookMapper::toBookResponse)
+                .orElseThrow(BookNotFoundException::new);
     }
 
     @Override
-    public List<BookResponse> findAllBySuggestion(String query) {
+    public void deleteById(Long id) {
+        if(!bookRepository.existsById(id)) {
+            throw new BookNotFoundException();
+        }
+        bookRepository.deleteById(id);
+    }
+
+
+    @Override
+    public List<BookResponse> searchByQuery(String query) {
         String lowerCaseTitle = query.toLowerCase().trim();
-        return inMemoryData.books.stream()
+        return bookRepository.findAll().stream()
                 .filter(book ->
                         book.getTitle().toLowerCase().contains(lowerCaseTitle) ||
                         book.getAuthor().getName().toLowerCase().contains(lowerCaseTitle))
-                .map(book -> new BookResponse(book.getId(), book.getTitle()))
+                .map(bookMapper::toBookResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BookResponse> findAll() {
+        return bookRepository.findAll()
+                .stream()
+                .map(bookMapper::toBookResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BookSearchResponse> findAllBySuggestion(String query) {
+        String lowerCaseTitle = query.toLowerCase().trim();
+        return bookRepository.findAll().stream()
+                .filter(book ->
+                        book.getTitle().toLowerCase().contains(lowerCaseTitle) ||
+                        book.getAuthor().getName().toLowerCase().contains(lowerCaseTitle))
+                .map(book -> new BookSearchResponse(book.getId(), book.getTitle()))
                 .limit(5)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Book save(BookRequest request) {
-        Author author = authorService.findById(request.getAuthorId());
-        Category category = categoryService.findById(request.getCategoryId());
+    public BookResponse save(BookRequest request, MultipartFile imageFile) throws IOException {
+        Author author = authorRepository.findById(request.getAuthorId())
+                .orElse(null);
+        Category category = categoryRepository.findById(request.getCategoryId())
+                .orElse(null);
+        Editorial editorial = editorialRepository.findById(request.getEditorialId())
+                .orElse(null);
+        Format format = formatRepository.findById(request.getFormatId())
+                .orElse(null);
 
-        if(author != null && category != null ) {
-            Book book = new Book();
-            book.setId(request.getId());
-            book.setTitle(request.getTitle());
+        if(author != null && category != null && editorial != null && format != null ) {
+            // Guardado de img y generación de url
+            String imageUrl = null;
+            if(imageFile != null && !imageFile.isEmpty()  ) {
+                String fileName = StringUtils.cleanPath(imageFile.getOriginalFilename());
+              //Generar el nombre del archivo
+                String cleanTitle = request.getTitle().toLowerCase().replaceAll("[^a-z0-9\\s-]", "");
+                cleanTitle = cleanTitle.replaceAll("\\s+", "-").trim();
+
+                String fileExtension =  "";
+                int dotIndex = fileName.lastIndexOf('.');
+                if (dotIndex > 0) {
+                        fileExtension = fileName.substring(dotIndex);
+                }
+
+                String newFileName = cleanTitle + fileExtension;
+                Path uploadPath = Paths.get(UPLOAD_DIR);
+
+                if (!Files.exists(uploadPath)) {
+                    Files.createDirectories(uploadPath);
+                }
+                Path filePath = uploadPath.resolve(newFileName);
+                Files.copy(imageFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+                imageUrl = "/img/" + newFileName;
+            } else {
+                imageUrl = "/img/default-book.webp";
+            }
+
+            Book book = bookMapper.toBook(request);
+            book.setUrlImg(imageUrl);
             book.setAuthor(author);
-            book.setSinopsis(request.getSinopsis());
-            book.setPrice(request.getPrice());
-            book.setIsbn(request.getIsbn());
-            book.setDescription(request.getDescription());
-            book.setUrlImg(request.getUrlImg());
             book.setCategory(category);
-            inMemoryData.books.add(book);
-            return book;
+            book.setFormat(format);
+            book.setEditorial(editorial);
+            return bookMapper.toBookResponse(bookRepository.save(book));
         } else {
-            throw new IllegalArgumentException("El autor o la categoria no existe");
+            throw new IllegalArgumentException("El autor o la categoria o formato o editorial no existe");
         }
+    }
+
+    @Override
+    public BookResponse update(Long id, BookRequest request) {
+        return bookRepository.findById(id)
+                .map( book -> authorRepository.findById(request.getAuthorId())
+                        .map(author -> categoryRepository.findById(request.getCategoryId())
+                                .map(category -> editorialRepository.findById(request.getEditorialId())
+                                        .map(editorial -> formatRepository.findById(request.getFormatId())
+                                                .map(format -> {
+                                                    book.setTitle(request.getTitle());
+                                                    book.setSinopsis(request.getSinopsis());
+                                                    book.setPrice(request.getPrice());
+                                                    book.setIsbn(request.getIsbn());
+                                                    book.setDescription(request.getDescription());
+                                                    book.setUrlImg(request.getUrlImg());
+                                                    book.setStock(request.getStock());
+                                                    book.setDimension(request.getDimension());
+                                                    book.setCategory(category);
+                                                    book.setAuthor(author);
+                                                    book.setFormat(format);
+                                                    book.setEditorial(editorial);
+                                                    return bookRepository.save(book);
+                                                })
+                                                .orElseThrow(FormatNotFoundException::new))
+                                        .orElseThrow(EditorialNotFoundException::new))
+                                .orElseThrow(CategoryNotFoundException::new))
+                        .orElseThrow(AuthorNotFoundException::new))
+                .map(bookMapper::toBookResponse)
+                .orElseThrow(BookNotFoundException::new);
+    }
+
+    @Override
+    public List<Book> findAllByAuthor(Long id) {
+        return bookRepository.findBooksByAuthorIdQuery(id);
     }
 }

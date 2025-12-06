@@ -247,3 +247,20 @@
     color: var(--color-principal) !important;
 }
 
+.btn-logout {
+    color: #dc3545;
+    font-weight: bold;
+    padding: .25rem 1rem;
+    text-align: left;
+    width: 100%;
+    border: none;
+    background-color: transparent;
+    text-decoration: none;
+}
+
+.btn-logout:hover {
+    color: #b02a37;
+    background-color: var(--color-secundario);
+    text-decoration: none;
+}
+

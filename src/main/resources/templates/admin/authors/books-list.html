@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/admin-layout}"> <head>
+    <meta charset="UTF-8">
+    <title th:text="${author.name} ? 'Libros de ' + ${author.name} : 'Libros del Autor'"></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+<div layout:fragment="content">
+    <h1 class="mt-4">
+        Libros de <span th:text="${author.name}">Nombre del Autor</span>
+    </h1>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Listado de Libros</h5>
+            <a th:href="@{/admin/authors}" class="btn btn-secondary btn-sm">
+                <i class="bi bi-arrow-left-circle"></i> Volver a Autores
+            </a>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th scope="col">Portada</th>
+                        <th>Título</th>
+                        <th>ISBN</th>
+                        <th>Categoría</th>
+                        <th>Editorial</th>
+                        <th>Precio</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="book : ${books}">
+                        <td th:text="${book.id}">1</td>
+                        <td>
+                            <img th:if="${book.urlImg != null and !book.urlImg.isEmpty()}"
+                                 th:src="${book.urlImg}"
+                                 alt="Portada"
+                                 style="max-width: 50px; height: auto; border: 1px solid #eee;">
+                            <span th:unless="${book.urlImg != null and !book.urlImg.isEmpty()}"
+                                  class="text-muted" style="font-size: 0.8em;">Sin portada</span>
+                        </td>
+                        <td th:text="${book.title}">Cien años de soledad</td>
+                        <td th:text="${book.isbn}">978-0-307-47472-8</td>
+                        <td th:text="${book.category.name}">Novela</td>
+                        <td th:text="${book.editorial.name}">DeBolsillo</td>
+                        <td th:text="'S/ ' + ${#numbers.formatDecimal(book.price, 0, 'COMMA', 2, 'POINT')}">$19.99</td>
+                    </tr>
+                    <tr th:if="${books.isEmpty()}">
+                        <td colspan="6" class="text-center">No hay libros registrados para este autor.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="page-css"></th:block>
+<th:block layout:fragment="page-js">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</th:block>
+</body>
+</html>
