@@ -23,3 +23,5 @@ spring:
 app:
   upload:
     dir: src/main/resources/static/img/
+server:
+  port: 8080
